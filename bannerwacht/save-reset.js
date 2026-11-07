@@ -1,6 +1,6 @@
 // The build helper keeps this version in sync with VERSION before packaging.
 (() => {
-  const version = '2.0.1';
+  const version = '2.0.2';
   const firstFullVersion = '2.0.0';
   const epoch = 'full-release-1';
   const marker = 'bannerwacht-progress-epoch';

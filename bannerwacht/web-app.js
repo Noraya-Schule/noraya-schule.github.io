@@ -1,5 +1,5 @@
 (() => {
-const APP_VERSION = '2.0.1';
+const APP_VERSION = '2.0.2';
 function start(){
   if(window.Capacitor?.isNativePlatform?.()||window.capacitorExports||!/^https?:$/.test(location.protocol))return;
   const menu=document.getElementById('menu');if(!menu)return;

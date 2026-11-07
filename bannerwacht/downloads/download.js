@@ -1,6 +1,6 @@
-const VERSION='2.0.1';
-const EXPECTED_SHA='3d29128440f1cf36e71c444be49806c33d027d3428c6bde47276453e1fe2e898';
-const EXPECTED_SIZE=92752507;
+const VERSION='2.0.2';
+const EXPECTED_SHA='2ac8bdee31190c8de574c2784cf52ba2d5f1bcdf18f78faffeb825f6b29b1f3f';
+const EXPECTED_SIZE=93217048;
 const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
 
 export async function loadApk({signal,onProgress=()=>{},fetchFile=fetch}={}){
