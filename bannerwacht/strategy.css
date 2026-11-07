@@ -1,0 +1,676 @@
+/* A compact field remains stable while the current decision takes the space below. */
+.spec-label{display:block;font-size:12px;color:#d1a7f2}.specialization-options{display:grid;gap:10px}.specialization-options .choice{padding:14px;text-align:left;font-size:16px}.specialization-options p{font-size:14px}.specialization-options small{display:block;font-size:14px;line-height:1.4}
+#development{margin:8px 0}#development[hidden],#selectedCardInfo[hidden]{display:none!important}
+#selectedCardInfo{padding:10px;background:#23444d;border:1px solid #e5c66f;border-radius:9px;margin-bottom:8px;font-size:14px;line-height:1.4}#selectedCardInfo small{display:block}#selectedCardInfo p{font-size:14px;margin:5px 0}#selectedCardInfo>div{display:flex;gap:6px;margin:6px 0}#selectedCardInfo .btn{font-size:14px;padding:6px}
+.campaign-rule{margin-top:8px;font-size:14px;line-height:1.4;color:#b8e0ec}.campaign-rule summary{cursor:pointer}.campaign-rule p{font-size:14px}
+#enemyIntel button.mini-card{font:inherit;color:#f8efd6;font-size:20px;cursor:pointer}#enemyIntel .mini-card small{font-size:12px;line-height:1.4;white-space:nowrap}
+.story-decision{padding:10px;margin-bottom:10px;background:#273e43;border:1px solid #e7bc62;border-radius:10px}.story-decision h3{font-size:18px;margin:6px 0}.story-decision p{font-size:14px;line-height:1.4;margin:6px 0}.story-decision>div{display:grid;grid-template-columns:1fr 1fr;gap:8px}.story-decision .choice{padding:10px;font-size:14px;text-align:left;margin:0}.story-decision small{display:block;font-size:12px;line-height:1.4;margin-top:4px}.story-decision .choice:disabled{opacity:.6}
+.inactive-synergies{margin-top:10px;font-size:14px}.synergy-item details{margin-top:6px;font-size:14px}.synergy-item small{display:block}
+#battleTimeline{position:absolute;inset:24px 8px auto;z-index:6;text-align:center;font-size:14px;line-height:18px;color:#f7d98a}#battleTimeline small{display:block;font-size:12px;color:#d0e4e5;line-height:16px}.initiative-order{display:flex;justify-content:center;gap:3px;margin:3px 0;overflow:hidden}.initiative-order button{min-width:0;padding:2px 3px;border-radius:4px;background:#183d3a;color:#c8f8df;border:1px solid #679989;font-size:12px}.initiative-order .enemy{background:#422d38;color:#ffc3c3;border-color:#99717f}
+#game .arena #battleGrid{inset:102px 6px 24px;grid-template-rows:1fr 1fr .26fr 1fr 1fr}
+#game .arena .battle-note{top:calc(50% + 33px);font-size:12px;line-height:16px}
+#game .fighter.preview-target{outline:2px solid #ffc66b;box-shadow:0 0 12px #ecb25c88}#game .fighter.preview-source{outline:2px solid #6bebff}#game .fighter.frosted{background-image:linear-gradient(135deg,#84dbff44,transparent);border-color:#a6edff}.fighter[role=button]{cursor:pointer}
+.action-preview{padding:8px;background:#29413d;border-left:3px solid #f0cd74;border-radius:5px;font-size:14px;line-height:1.35;margin:5px 0;max-height:90px;overflow:auto}.preview-actions{display:flex;gap:6px;margin:5px 0}.preview-actions .btn{flex:1;font-size:14px;padding:8px;min-height:40px}.tactic-card[aria-pressed=true]{outline:2px solid #ffe091;outline-offset:-2px}#game #tacticHand:has(.action-preview) .tactic-cards{display:none}#game #tacticHand:has(.action-preview) .turn-help{display:none}
+#battleReport ul{padding-left:20px;margin:8px 0;line-height:1.4}#battleReport li{margin:5px 0}#battleReport table{width:100%;border-collapse:collapse;font-size:12px}#battleReport td,#battleReport th{padding:5px;text-align:left;border-bottom:1px solid #526b70}#battleReport[hidden]{display:none!important}
+@media(min-width:761px){
+ .playing .wrap{max-width:1180px}
+ #game[data-phase=shop]{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+ #game[data-phase=shop]>.row{grid-column:1/-1}
+ #game[data-phase=shop]>.formation-title{display:none}
+ #game[data-phase=shop] #mobileFormation{display:block;position:sticky;top:16px;grid-column:1;grid-row:2}
+ #game[data-phase=shop] #mobileDock{display:flex;flex-direction:column;grid-column:2;grid-row:2;min-width:0;gap:10px}
+ #game[data-phase=shop] #mobileTabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+ #mobileTabs button{padding:10px 3px;background:#193843;border:1px solid #5b7b84;color:#e5eee6;border-radius:7px;font-size:14px;cursor:pointer}
+ #mobileTabs button[aria-pressed=true]{background:#e7bc62;color:#17313a;font-weight:bold}
+ #game[data-phase=shop] #mobileRoute,#game[data-phase=shop] #mobileArmy,#game[data-phase=shop] #mobileCommands,#game[data-phase=shop] #mobileStory,#game[data-phase=shop] #synergyDetails,#game[data-phase=shop] #shop{display:none}
+ #game[data-phase=shop] #mobileDock[data-tab=route] #mobileRoute,#game[data-phase=shop] #mobileDock[data-tab=army] #mobileArmy,#game[data-phase=shop] #mobileDock[data-tab=commands] #mobileCommands,#game[data-phase=shop] #mobileDock[data-tab=story] #mobileStory,#game[data-phase=shop] #mobileDock[data-tab=synergy] #synergyDetails,#game[data-phase=shop] #mobileDock[data-tab=shop] #shop{display:block}
+ #game[data-phase=shop] #mobileFormation .slot{min-height:190px;padding:20px 5px 8px}#game[data-phase=shop] #mobileFormation .symbol{font-size:32px}#game[data-phase=shop] #mobileFormation .name{font-size:16px;line-height:1.2}#game[data-phase=shop] #mobileFormation .role{font-size:12px}#game[data-phase=shop] #mobileFormation .card-rule{display:none}#game[data-phase=shop] #mobileFormation .unit-numbers{font-size:14px}
+ #game.battle-pop-open .arena{top:62px;height:calc(100dvh - 370px);min-height:290px}
+ #game.battle-pop-open #tacticHand{max-height:292px}
+ #game.battle-pop-open #tacticHand .tactic-card{min-height:88px}
+}
+@media(max-width:760px){
+ #game #mobileFormation{height:clamp(160px,25dvh,205px);gap:2px}
+ #game #mobileFormation .slot{padding:15px 3px 3px}
+ #game #mobileFormation .unit,#game #benchBoard .unit{grid-template-columns:26px minmax(0,1fr);gap:2px}
+ #game #mobileFormation .name,#game #benchBoard .name,#game .spec-label{display:none}
+ #game #mobileFormation .symbol,#game #benchBoard .symbol{grid-row:1;grid-column:1;font-size:23px}
+ #game #mobileFormation .unit-kind,#game #benchBoard .unit-kind{grid-row:1;grid-column:2;font-size:12px;line-height:15px;white-space:normal;text-align:left}
+ #game #mobileFormation .unit-numbers,#game #benchBoard .unit-numbers{grid-row:2;line-height:16px;font-size:12px}
+ #game #benchBoard .slot{min-height:70px;padding:16px 3px 3px}
+ #game #mobileTabs button{min-height:36px;padding:5px 1px}
+ #game #campAdvice{font-size:12px;line-height:16px;margin:0;padding:4px 6px;max-height:40px;overflow:auto;flex:none}
+ #game #mobileDock>#battleReport{display:none!important}
+ #game #mobileStory #battleReport{display:block!important}
+ #game #battleTimeline{inset:18px 4px auto;font-size:12px;line-height:15px}
+ #game .initiative-order{gap:2px;margin:2px 0}
+ #game .initiative-order button{padding:1px 2px;line-height:17px;font-size:12px}
+ #game #battleTimeline small{line-height:14px}
+ #game .arena #battleGrid{inset:90px 4px 16px;gap:2px}
+ #game .arena .battle-note{top:calc(50% + 36px)}
+ #game .battle-cell .fighter .f-name{display:none}
+ #game .battle-cell .fighter .figure{grid-row:1;font-size:20px}
+ #game .battle-cell .fighter .unit-kind{grid-row:1;font-size:12px;line-height:14px;padding-right:10px}
+ #game .battle-cell .fighter .unit-numbers{grid-row:2}
+ #game[data-phase=battle] #mobileDock{max-height:43%;gap:3px;padding-top:3px}
+ #game #tacticHand .tactic-card{padding:5px 3px}
+ #game #tacticHand .tactic-card>span,#game #tacticHand .turn-help{display:none}
+ #game #tacticHand .tactic-card>b{font-size:12px;line-height:15px}
+ #game #tacticHand .tactic-card>small{font-size:12px;line-height:14px}
+ #game #tacticHand .action-preview{font-size:12px;line-height:16px;padding:5px;margin:3px 0;max-height:72px}
+ #game #tacticHand .preview-actions{margin:3px 0}
+ #game #tacticHand .preview-actions .btn{font-size:12px;min-height:34px;padding:4px}
+ #game #tacticHand:has(.action-preview) #endTurn{display:none}
+ #game #battleControls .btn{font-size:12px;line-height:15px;min-height:34px;padding:3px}
+ #game #enemyIntel .intel-head{font-size:12px}#game #enemyIntel .mini-card small{display:block;font-size:12px}#game #enemyIntel .intel-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+ #game .story-teaser{font-size:12px;padding:5px;margin:4px 0}
+ #game .story-decision{padding:6px}#game .story-decision h3{font-size:16px}#game .story-decision .choice{padding:7px}
+ #game .campaign-rule{font-size:12px}
+ #game .story-decision p{font-size:14px}
+ #game #reward .reward-card em{font-size:13px;line-height:1.35}
+ #game[data-phase=reward] #mobileFormation{height:145px}
+}
+@media(min-width:600px) and (max-width:760px) and (max-height:500px){
+ #game #mobileFormation{height:100%}
+ #game[data-phase=battle] #mobileDock{max-height:none}
+ #game .arena #battleGrid{inset:78px 4px 12px}
+ #game #battleTimeline small{font-size:12px;line-height:13px}
+}
+@media(max-width:760px) and (max-height:600px){#game #mobileFormation{height:172px}#game #mobileTabs button{min-height:32px}#game #campAdvice{display:none}#game .arena #battleGrid{inset:75px 4px 12px}#game .arena .battle-note{top:calc(50% + 29px)}#game #battleControls .btn{min-height:30px}#game #tacticHand .tactic-card>small{display:none}#game #tacticHand .tactic-card>b{padding-top:7px}}
+
+.intel-fold>summary{font-size:14px;line-height:1.4;color:#f3d58a;cursor:pointer}.intel-fold[open]>.intel-head{margin-top:8px}
+@media(max-width:760px){#game .story-teaser-title{display:none}#game #journeyChoice .journey-boss{grid-template-columns:1fr}#game #journeyChoice .journey-boss>span{display:none}#game #journeyChoice .journey-boss small{font-size:12px}#game #enemyIntel{padding:6px}#game .intel-fold>summary{font-size:12px}}
+
+#game #mobileDock #battleReport[hidden]{display:none!important}
+@media(max-width:760px){#game #journeyChoice .journey-boss small{display:none}}
+
+/* Range badges sit below the card readout, freeing the top edge. */
+#game #mobileFormation .range-tag,#game #benchBoard .range-tag{top:auto;bottom:2px}
+#game #mobileFormation .slot.filled,#game #benchBoard .slot.filled{padding-top:4px;padding-bottom:19px;align-items:flex-start}
+#game #mobileFormation .slot.filled .unit,#game #benchBoard .slot.filled .unit{align-content:start}
+
+#game #reward .reward-card-info{display:grid;gap:8px;white-space:normal;overflow-wrap:anywhere}
+#game #reward .reward-card-info>span{display:block}
+#game #reward .reward-card-info strong{display:block;color:#f1d17b}
+#game #reward .reward-card em{font-size:14px;line-height:1.45;max-height:none;overflow:visible}
+#game #reward .reward-delivery{border-top:1px solid #6a858b;padding-top:8px}
+#game #reward .reward-card{height:auto;max-height:none;align-items:start}
+#game .library-card.locked{opacity:1}
+#game .library-upgrade{white-space:normal;overflow:visible;max-height:none}
+
+#tutorialGuide{grid-column:1/-1;flex:none;border:2px solid #e7bc62;border-radius:10px;background:#173440;padding:10px;color:#f5f0dc;min-width:0}
+#tutorialGuide .tutorial-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
+#tutorialGuide strong{display:block;color:#ffe19a;font-size:16px;margin-top:4px}
+#tutorialGuide p{font-size:14px;line-height:1.4;margin:4px 0}
+#tutorialGuide button{font-size:13px;padding:5px 8px;min-height:32px}
+.tutorial-target{outline:3px solid #ffe19a!important;outline-offset:-3px;box-shadow:0 0 12px #e7bc6277!important}
+.tutorial-running #game[data-phase=shop]{grid-template-rows:auto auto auto}
+.tutorial-running #game[data-phase=shop] #mobileFormation{grid-row:3}
+.tutorial-running #game[data-phase=shop] #mobileDock{grid-row:3}
+@media(max-width:760px){
+ .tutorial-running #game{overflow:auto}
+ #tutorialGuide{padding:7px}
+ .tutorial-running #game #mobileFormation{height:145px;min-height:145px}
+ .tutorial-running #game #mobileDock{min-height:225px;flex:1 0 225px}
+ .tutorial-running #game.battle-mode .arena{min-height:240px}
+ .tutorial-running #game.battle-mode #mobileDock{min-height:230px}
+}
+
+@media(max-width:760px){.tutorial-running #tutorialGuide{position:sticky;top:0;z-index:25}}
+
+/* Touch-friendly volume controls and readable field capacity. */
+#menu .volume-setting{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:12px 0}
+#menu .volume-setting label{font-size:16px}
+#menu input[type=range]{appearance:none;-webkit-appearance:none;display:block;width:100%;height:48px;padding:0;background:transparent;cursor:pointer;touch-action:pan-y}
+#menu input[type=range]::-webkit-slider-runnable-track{height:12px;background:#718f98;border-radius:8px}
+#menu input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;margin-top:-10px;border:3px solid #fff1b6;border-radius:50%;background:#d4a641}
+#menu input[type=range]::-moz-range-track{height:12px;background:#718f98;border-radius:8px}
+#menu input[type=range]::-moz-range-thumb{width:28px;height:28px;border:3px solid #fff1b6;border-radius:50%;background:#d4a641}
+#menu input[type=range]:focus-visible{outline:3px solid #ffe19a;outline-offset:3px}
+#game #round{white-space:normal;max-width:55%;font-size:14px}
+#game .troop-limit summary{cursor:pointer}
+#game .troop-limit small{display:block;font-size:12px;line-height:1.35;margin-top:3px}
+#game .troop-limit p{font-size:14px;line-height:1.4;text-align:left;max-width:360px}
+#game #reward .reward-title{display:block;grid-column:1/-1}
+#game #reward .reward-title small{display:block;font-size:14px;line-height:1.4}
+#game #tacticHand #heroPower{position:static;inset:auto;transform:none;width:100%;margin:7px 0 0;min-height:44px;font-size:14px;white-space:normal;box-shadow:none}
+@media(min-width:761px){#game.battle-pop-open #tacticHand{max-height:320px}}
+#game #round{position:relative}
+#game .troop-limit[open] p{position:absolute;right:0;top:100%;z-index:30;width:min(320px,80vw);max-height:50dvh;overflow:auto;background:#173440;border:2px solid #e7bc62;border-radius:8px;padding:12px;box-shadow:0 6px 18px #0008}
+@media(max-width:760px){#game[data-phase=reward] #mobileDock>#reward{grid-template-rows:auto repeat(3,minmax(min-content,1fr))}}
+
+/* Recruitment reservations and readable, separate trophy choices. */
+.shop-offer{min-width:0;display:flex;flex-direction:column;gap:6px}.shop-offer>.offer{width:100%;flex:1}.offer-lock{min-height:44px;padding:8px;border:1px solid #82999b;border-radius:8px;background:#183640;color:#e2ece9;font:600 .875rem/1.4 system-ui;cursor:pointer}.shop-offer.reserved .offer-lock{background:#493f29;border-color:#e5c774;color:#ffe5a3}.boss-trophy{padding:16px;border:2px solid #c4a257;border-radius:14px;background:#193540;color:#e2e9e4;text-align:left}.boss-trophy header{display:flex;align-items:center;gap:12px}.boss-trophy header>span{font-size:2rem}.boss-trophy h3{font:700 1.15rem/1.4 Georgia,serif;color:#f0d18a;margin:0 0 8px}.trophy-effects{font-size:1rem;line-height:1.55}.trophy-effects strong,.reward-effect{display:block;margin:10px 0}.reward-effect{padding:10px;border-left:3px solid #bca061;background:#102a34}.reward-effect b{display:block;color:#f0d18a}.trophy-scope{font-size:.875rem;line-height:1.5;color:#bfd0cf}.boss-trophy .reward-card-info{font-size:.95rem}.boss-trophy .btn{font-size:1rem;min-height:48px;margin-top:8px}#reward:has(.boss-trophy){grid-template-columns:1fr}.campaign-track{gap:2px}#battleFast{display:none!important}
+
+/* Art stays inside a fixed box so decoding cannot shift card layout. */
+.unit-art{display:inline-block;width:64px;height:64px;max-width:100%;object-fit:contain;vertical-align:middle;image-rendering:pixelated}
+.npc-art{background-size:400% 300%;background-repeat:no-repeat}
+.card-art .unit-art{width:120px;height:120px}
+.unit-art.unit-art-detail{display:block;width:160px;height:160px;margin:8px auto}
+#game .reward-icon .unit-art{width:48px;height:64px}
+#game .mini-card .unit-art{width:48px;height:48px}
+#game .battle-cell .figure .unit-art{width:44px;height:44px}
+#game .battle-cell .fighter{grid-template-columns:44px minmax(0,1fr);max-width:210px}
+#game .battle-cell .fighter .f-name{display:block;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:14px}
+#game .battle-cell .fighter .figure{grid-row:1/3}
+#game .battle-cell .fighter .unit-kind{grid-row:2;line-height:14px;font-size:12px}
+#game .battle-cell .fighter .unit-numbers{grid-row:3}
+#game .battle-cell .fighter .f-bar{grid-row:4}
+
+/* Battle regions participate in one layout instead of overlapping fixed panels.
+   Minimum content height + scrolling on very short screens prevents clipped rows. */
+body:has(#game[data-phase=battle]){overflow:hidden}
+#game[data-phase=battle]{position:fixed;inset:12px;z-index:40;display:flex;flex-direction:column;gap:6px;max-width:1000px;margin:0 auto;padding:8px;overflow:auto;background:#102832}
+#game[data-phase=battle]::after{display:none}
+#game[data-phase=battle]>.row{flex:none;min-height:30px}
+#game[data-phase=battle]>.formation-title,#game[data-phase=battle]>#battleViewToggle{display:none!important}
+#game[data-phase=battle] #arena{position:relative;inset:auto;transform:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(300px,1fr) auto auto;flex:1 0 430px;width:100%;height:auto;min-height:430px;padding:6px;margin:0;overflow:hidden;box-shadow:none}
+#game[data-phase=battle] #arena.hide{display:none}
+#game[data-phase=battle] #arena:before{display:none}
+#game[data-phase=battle] #arena .arena-label{position:static;font-size:11px;line-height:14px}
+#game[data-phase=battle] #arena .arena-label.top{grid-row:1}
+#game[data-phase=battle] #arena .arena-label.bottom{grid-row:4}
+#game[data-phase=battle] #battleTimeline{position:static;grid-row:2;font-size:12px;line-height:16px;min-width:0}
+#game[data-phase=battle] #arena #battleGrid{position:relative;inset:auto;grid-row:3;min-height:300px;grid-template-rows:minmax(68px,1fr) minmax(68px,1fr) 12px minmax(68px,1fr) minmax(68px,1fr);gap:3px}
+#game[data-phase=battle] #battleGrid .battle-row{min-height:0}
+#game[data-phase=battle] #arena #battleNote{position:static;grid-row:5;width:100%;min-height:16px;line-height:16px;font-size:12px;margin:2px 0 0;padding:0 3px;white-space:normal}
+#game[data-phase=battle] #mobileDock{display:flex;flex-direction:column;flex:0 0 auto;min-height:0;height:auto;max-height:35dvh;overflow:auto;gap:4px;padding:4px 0 0;border-top:1px solid #526b70}
+#game[data-phase=battle] #mobileDock>*{display:none!important}
+#game[data-phase=battle] #mobileDock>#tacticHand:not(.hide){display:block!important;position:static;inset:auto;transform:none;width:100%;max-height:none;overflow:visible;margin:0;padding:6px;box-shadow:none}
+#game[data-phase=battle] #battleControls{display:none!important}
+#game[data-phase=battle] #tacticHand .tactic-card{min-height:0;padding:6px}
+#game[data-phase=battle] #tacticHand .tactic-cards{margin:4px 0;gap:5px}
+#game[data-phase=battle] #tacticHand .turn-help{display:none}
+#game[data-phase=battle] #tacticHand .btn{min-height:40px;padding:6px;font-size:14px}
+#game[data-phase=battle] #tacticHand #heroPower{margin-top:4px}
+body:has(#game[data-phase=battle]) #campaignProgress{position:fixed;top:2px;left:12px;right:12px;transform:none;width:auto;max-width:1000px;margin:auto}
+@media(max-width:760px){
+ #game[data-phase=battle]{inset:12px 3px 3px;padding:5px}
+ #game[data-phase=battle] #arena{flex-basis:405px;min-height:405px;padding:3px}
+ #game .battle-cell .fighter{grid-template-columns:28px minmax(0,1fr)}
+ #game .battle-cell .figure .unit-art{width:28px;height:36px}
+ #game #mobileFormation .symbol .unit-art,#game #benchBoard .symbol .unit-art{width:30px;height:34px}
+ #game #mobileFormation .name,#game #benchBoard .name{display:block;grid-column:2;grid-row:1;white-space:normal;font-size:12px;line-height:14px;overflow-wrap:anywhere}
+ #game #mobileFormation .symbol,#game #benchBoard .symbol{grid-row:1/3}
+ #game #mobileFormation .unit-kind,#game #benchBoard .unit-kind{grid-row:2}
+ #game #mobileFormation .unit-numbers,#game #benchBoard .unit-numbers{grid-row:3}
+ #game #mobileFormation{height:220px;min-height:220px}
+ #game #mobileFormation .unit,#game #benchBoard .unit{grid-template-columns:30px minmax(0,1fr)}
+ #game #benchBoard .slot{min-height:105px}
+ #game .offer .unit-art{width:72px;height:72px}
+}
+/* Allow the full names and four stat badges their measured height. */
+#game[data-phase=battle] #arena{flex-basis:500px;min-height:500px}
+#game[data-phase=battle] #arena #battleGrid{min-height:384px;grid-template-rows:repeat(2,minmax(90px,1fr)) 12px repeat(2,minmax(90px,1fr))}
+@media(max-width:760px){
+ #game[data-phase=battle] #arena{flex-basis:480px;min-height:480px}
+ #game[data-phase=battle] #arena #battleGrid{min-height:364px;grid-template-rows:repeat(2,minmax(85px,1fr)) 12px repeat(2,minmax(85px,1fr))}
+ #game .battle-cell .fighter .f-name{grid-column:1/-1;grid-row:1;text-align:center;line-height:14px;min-height:28px;padding-right:10px}
+ #game .battle-cell .fighter .figure{grid-row:2}
+ #game .battle-cell .figure .unit-art{height:24px;width:28px}
+ #game .battle-cell .fighter .unit-kind{padding-right:0}
+ #game .battle-cell .fighter .unit-numbers{column-gap:3px;font-size:12px}
+}
+#game[data-phase=battle] #arena{flex:1 0 auto;min-height:0;grid-template-rows:auto auto minmax(344px,1fr) auto auto}
+#game[data-phase=battle] #arena .arena-label{margin:0;min-height:0;height:auto}
+#game[data-phase=battle] #arena #battleGrid{min-height:344px;grid-template-rows:repeat(2,minmax(80px,1fr)) 12px repeat(2,minmax(80px,1fr))}
+#game .battle-cell .figure .unit-art{height:36px}
+@media(max-width:760px){
+ #game[data-phase=battle] #arena{grid-template-rows:auto auto minmax(364px,1fr) auto auto}
+ #game[data-phase=battle] #arena #battleGrid{min-height:364px;grid-template-rows:repeat(2,minmax(85px,1fr)) 12px repeat(2,minmax(85px,1fr))}
+ #game .battle-cell .figure .unit-art{height:24px}
+}
+
+/* Illustrated selection, spells and rewards. Keep numbers as text, never in art. */
+.game-art{display:inline-block;vertical-align:middle;width:56px;height:56px;max-width:100%;object-fit:contain;image-rendering:pixelated}
+.game-art.art-portrait{display:block;width:100%;height:180px;margin:0 auto 8px}
+.game-art.art-cover{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:8px;margin:0 0 10px}
+.game-art.art-inline{width:28px;height:28px;margin-right:5px;object-fit:contain}
+.hero-card>.symbol{display:block;width:100%}.hero-card .art-portrait{height:200px}
+.campaign-card{min-width:0;overflow:hidden}.campaign-card .campaign-status{font-size:18px;line-height:20px}
+.campaign-card.campaign-locked .art-cover{filter:saturate(.55);opacity:.8}
+.race-card .art-portrait{height:140px}
+#heroBadge>span .game-art{width:64px;height:72px}
+.hero-line .game-art{width:42px;height:48px}
+#game #tacticHand .tactic-card>.spell-art{display:block;line-height:1}
+#game #tacticHand .spell-art .game-art{width:40px;height:40px}
+#game #tacticHand #heroPower .game-art{width:28px;height:28px}
+#game .reward-icon .game-art,.boss-trophy header .game-art{width:60px;height:60px}
+#compendium .art-portrait{height:180px;max-width:240px}
+#compendium .art-cover{max-width:560px}
+@media(max-width:760px){
+ .hero-card .art-portrait{height:155px}.race-card .art-portrait{height:110px}
+ #game #tacticHand .spell-art .game-art{width:30px;height:30px}
+ #game #tacticHand .tactic-card>b{padding-top:0}
+ #game #tacticHand .tactic-card>i{z-index:1}
+ .campaign-card .art-cover{margin-bottom:8px}
+}
+
+/* The active army owns the frame; the chosen campaign owns the battlefield. */
+body[data-faction]{--world:#0d1e2b;--surface:#193744;--surface-deep:#102a35;--trim:#bba16a;--accent:#f4d58e;--ink:#f6f1df;--frame-radius:12px;--faction-art:none;--arena-art:none}
+body[data-faction=humans]{--world:#0d203c;--surface:#183956;--surface-deep:#112944;--trim:#b99857;--accent:#ffe0a0;--frame-radius:8px}
+body[data-faction=elves]{--world:#071f1d;--surface:#193e33;--surface-deep:#102c27;--trim:#78ad97;--accent:#d4f6c3;--frame-radius:18px 5px}
+body[data-faction=orcs]{--world:#231713;--surface:#493128;--surface-deep:#30231f;--trim:#be7953;--accent:#ffd2a2;--frame-radius:3px}
+body[data-faction=undead]{--world:#171326;--surface:#302a46;--surface-deep:#221f35;--trim:#9989b7;--accent:#d8d1ff;--frame-radius:16px 16px 4px 4px}
+body[data-faction]:not([data-faction=neutral]){background-color:var(--world);background-image:linear-gradient(#08121b55,#08121b99),var(--faction-art);background-size:cover;background-position:center;background-attachment:fixed;color:var(--ink)}
+body[data-faction]:not([data-faction=neutral]) :is(.panel,dialog,#tacticHand,#mobileTabs,.journey-choice,.library-fold,.progress-fold,.intel-fold,.boss-trophy,.story-decision){background:color-mix(in srgb,var(--surface) 94%,transparent);border-color:var(--trim);border-radius:var(--frame-radius);box-shadow:inset 0 0 0 2px #ffffff08,0 8px 24px #0005}
+body[data-faction]:not([data-faction=neutral]) :is(.slot,.offer,.library-card,.hero-card,.campaign-card,.choice,.path-card,.tactic-buy,.tactic-card,.mini-card){background-color:var(--surface-deep);background-image:linear-gradient(145deg,#ffffff0c,transparent 50%);border-color:var(--trim);border-radius:var(--frame-radius);color:var(--ink)}
+body[data-faction]:not([data-faction=neutral]) :is(.brand,.eyebrow,h1,h2,h3,.name,.choice b,.row-label){color:var(--accent)}
+body[data-faction]:not([data-faction=neutral]) :is(.btn.secondary,.pill,.chip,.hero-line,.log){background:var(--surface-deep);border-color:var(--trim);color:var(--ink)}
+body[data-faction]:not([data-faction=neutral]) .btn:not(.secondary):not(.danger){background:var(--accent);border-color:var(--trim);color:var(--world)}
+body[data-faction]:not([data-faction=neutral]) :is(.chosen,.pick,.path-card.chosen){outline:2px solid var(--accent);outline-offset:1px}
+body[data-faction] #game[data-phase=battle]{background:var(--world);border-color:var(--trim)}
+body[data-arena-theme] #game #arena{background-image:linear-gradient(#07101840,#07101870),var(--arena-art);background-size:cover;background-position:center;border-color:var(--trim)}
+body[data-faction] #game .battle-cell .fighter{background-color:color-mix(in srgb,var(--surface-deep) 88%,transparent);border-color:var(--trim);border-radius:var(--frame-radius)}
+body[data-faction] #game .battle-cell .fighter.campaign-boss{border:2px solid #f2b85d;background:linear-gradient(145deg,#48213bea,#171320ee);box-shadow:inset 0 0 10px #ee914533,0 0 8px #f4a74d77}
+#game .campaign-boss .level-mark{background:#672b24;color:#ffdfa5;font-size:10px}
+#game .campaign-boss .f-name{color:#ffe1a3}
+.journey-boss .unit-art{width:64px;height:80px;object-fit:contain}.journey-boss:has(.boss-art){grid-template-columns:64px minmax(0,1fr)}
+#game .hero-line{grid-template-columns:42px minmax(0,1fr)}
+@media(prefers-reduced-motion:reduce){body[data-faction]{background-attachment:scroll}}
+.boss-plan{margin-top:12px;padding-top:10px;border-top:1px solid var(--trim,#b99857)}.boss-plan p,.boss-plan>small{font-size:13px;line-height:1.45}.boss-plan-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}.boss-plan-options .choice{min-width:0;padding:10px;min-height:48px}.boss-plan-options small{display:block;margin-top:5px;font-size:12px}.bodyguard-label{color:#ffe0a0;font-weight:800}#game .boss-bodyguard .level-mark{background:#6b4b24;color:#ffe9b9;font-size:9px}
+@media(max-width:540px){.boss-plan-options{grid-template-columns:1fr}.boss-plan-options .choice{display:block}}
+/* A boss has a larger silhouette; its row grows instead of clipping neighbours. */
+#game .battle-cell .fighter.campaign-boss{grid-template-columns:64px minmax(0,1fr);max-width:250px}
+#game .battle-cell .campaign-boss .figure .unit-art{width:64px;height:70px}
+#game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{grid-template-rows:minmax(110px,1fr) minmax(85px,1fr) 12px repeat(2,minmax(85px,1fr));min-height:389px}
+@media(max-width:760px){
+ #game .battle-cell .fighter.campaign-boss{grid-template-columns:minmax(0,1fr)}
+ #game .battle-cell .campaign-boss .figure{grid-column:1/-1;grid-row:2}
+ #game .battle-cell .campaign-boss .figure .unit-art{width:64px;height:56px}
+ #game .battle-cell .campaign-boss .unit-kind{display:none}
+ #game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{grid-template-rows:minmax(150px,1fr) minmax(85px,1fr) 12px repeat(2,minmax(85px,1fr));min-height:429px}
+}
+@media(max-width:540px){
+ .hero-pick{grid-template-columns:minmax(0,1fr)}
+ .hero-card{display:grid;grid-template-columns:85px minmax(0,1fr);gap:5px 10px;text-align:left;padding:12px}
+ .hero-card>.symbol{grid-column:1;grid-row:1/8;align-self:center}
+ .hero-card>:not(.symbol){grid-column:2;margin:0}
+ .hero-card .art-portrait{width:85px;height:180px;margin:0}
+ .hero-card strong{font-size:16px}.hero-card small,.hero-card em,.hero-card .passive{font-size:13px;line-height:1.4}
+}
+
+.target-settings{padding:10px;margin:8px 0;border:1px solid #ad995c;border-radius:8px;min-width:0}.target-settings label,.target-settings small{display:block;margin:8px 0;line-height:1.4}.target-settings select{display:block;width:100%;max-width:100%;min-width:0;min-height:44px;padding:7px;font:inherit;font-size:14px;background:#102a35;color:#fff;border:1px solid #a4bbc0;border-radius:6px}.target-settings summary{min-height:36px;cursor:pointer}.target-settings p,.target-settings small{font-size:13px}.priority-mark{position:absolute;bottom:1px;right:3px;font-size:13px;color:#ffe2a1;pointer-events:none}#selectedCardInfo .target-settings{display:block}#targetOrders{flex-shrink:0}.learning-dialog header{flex-wrap:wrap}.learning-dialog header h2{min-width:0;overflow-wrap:anywhere;flex:1 1 150px}.learning-dialog header .btn{flex:0 0 auto}.learning-dialog{overflow-x:hidden}
+
+/* Card identity remains visible on the compact formation: faction rail, rarity frame and role mark. */
+#game .unit-card{border-left-width:5px;border-top-width:3px}
+#game .unit-card[data-race="humans"]{border-left-color:#d3a84c}
+#game .unit-card[data-race="elves"]{border-left-color:#69a96b}
+#game .unit-card[data-race="orcs"]{border-left-color:#b86645}
+#game .unit-card[data-race="undead"]{border-left-color:#a98ddd}
+#game .unit-card.rarity-common{border-top-color:#bdc8c9}
+#game .unit-card.rarity-rare{border-top-color:#67c8ef;box-shadow:inset 0 0 0 2px #102631,0 0 0 1px #367da0,0 0 10px #46b8e744}
+#game .unit-card.rarity-epic{border-top-color:#d39af7;box-shadow:inset 0 0 0 2px #102631,0 0 0 1px #8754a6,0 0 12px #ba72e955}
+#game .library-card[data-race]{border-left-width:5px;border-top-width:3px}
+#game .library-card[data-race="humans"]{border-left-color:#d3a84c}
+#game .library-card[data-race="elves"]{border-left-color:#69a96b}
+#game .library-card[data-race="orcs"]{border-left-color:#b86645}
+#game .library-card[data-race="undead"]{border-left-color:#a98ddd}
+#game .library-card.rarity-common{border-top-color:#bdc8c9}
+#game .library-card.rarity-rare{border-top-color:#67c8ef}
+#game .library-card.rarity-epic{border-top-color:#d39af7}
+.role-mark{display:inline-grid;place-items:center;width:1.1em;height:1.1em;margin-right:3px;border-radius:4px;background:#0b2028aa;color:#ffe29b;font-style:normal;line-height:1;vertical-align:-.08em}
+#game .offer[data-race="humans"]{border-left:4px solid #d3a84c}
+#game .offer[data-race="elves"]{border-left:4px solid #69a96b}
+#game .offer[data-race="orcs"]{border-left:4px solid #b86645}
+#game .offer[data-race="undead"]{border-left:4px solid #a98ddd}
+#game .offer.rarity-rare{border-top:3px solid #67c8ef}
+#game .offer.rarity-epic{border-top:3px solid #d39af7}
+@media(max-width:760px){#mobileFormation .unit-card{border-left-width:4px;border-top-width:3px}#mobileFormation .role-mark{width:13px;height:13px;margin-right:2px;font-size:10px}#benchBoard .unit-card .role-mark{width:12px;height:12px;font-size:9px}}
+
+/* Mobile controls share the viewport; extra information opens on demand. */
+#spellToggle,#formationToggle{display:none}
+.selected-card-extra>summary{cursor:pointer;min-height:32px;display:list-item;align-content:center;font-size:14px}
+@media(max-width:760px){
+ body.playing .wrap{box-sizing:border-box}
+ #game #mobileFormation{height:clamp(218px,29dvh,244px);min-height:218px}
+ #game #mobileFormation .formation-label{gap:4px;min-height:32px}
+ .tutorial-running #game #formationToggle{display:none}
+ #game #formationToggle{display:block;min-height:32px;padding:3px 6px;border:1px solid var(--trim,#82999b);border-radius:6px;background:#183640;color:#f4dfac;font:inherit;font-size:12px;cursor:pointer}
+ #game #mobileFormation #synergySummary{max-width:45%;margin-left:auto}
+ #game #mobileFormation.formation-collapsed{height:auto;min-height:32px;display:block}
+ #game #mobileFormation.formation-collapsed>.board,#game #mobileFormation.formation-collapsed>.row-label:not(.formation-label){display:none}
+ #game #mobileDock{gap:4px;padding-top:4px}
+ #game #mobileTabs button{min-height:36px}
+ #game #mainAction{min-height:44px}
+ #game .offer .unit-art{width:44px;height:44px}
+ #game #offers .offer{padding:5px 3px}
+ #game #offers .offer-upgrade{margin-top:3px;padding-top:3px}
+ #game .shop-offer{gap:3px}
+ #game .offer-lock{padding:4px;min-height:36px;font-size:12px}
+ #game #benchBoard .slot{min-height:90px}
+ #game #selectedCardInfo{padding:6px;margin-bottom:4px}
+ #game #selectedCardInfo .selected-card-extra{margin:3px 0}
+ #game[data-phase=battle] #arena{flex:1 0 auto;min-height:0;grid-template-rows:auto auto minmax(328px,1fr) auto auto}
+ #game[data-phase=battle] #arena #battleGrid{min-height:328px;grid-template-rows:repeat(2,minmax(76px,1fr)) 12px repeat(2,minmax(76px,1fr))}
+ #game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{min-height:352px;grid-template-rows:minmax(100px,1fr) minmax(76px,1fr) 12px repeat(2,minmax(76px,1fr))}
+ #game .battle-cell .campaign-boss .figure .unit-art{height:32px;width:44px}
+ #game[data-phase=battle] #mobileDock{flex:0 1 auto;max-height:45dvh;min-height:130px;overflow:auto}
+ #game[data-phase=battle] #mobileDock>#tacticHand:not(.hide){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px}
+ #game #tacticHand>.turn-head,#game #tacticHand>.tactic-cards,#game #tacticHand>.action-preview,#game #tacticHand>.preview-actions{grid-column:1/-1;margin:0}
+ #game #spellToggle{display:block;grid-column:1/-1;min-height:36px;padding:4px 8px;border:1px solid #82999b;border-radius:7px;background:#183640;color:#ffe3a0;font:600 14px/1.3 system-ui;cursor:pointer}
+ #game #spellToggle[aria-expanded=true]{border-color:#e7bc62;background:#31443b}
+ #game #tacticHand:not(.spell-list-open)>.tactic-cards{display:none}
+ #game #tacticHand:has(.action-preview)>#spellToggle{display:none}
+ #game[data-phase=battle] #tacticHand #heroPower,#game[data-phase=battle] #tacticHand #endTurn{margin:0;min-height:44px;align-self:stretch;font-size:14px;padding:5px}
+ #game #tacticHand:has(#heroPower.hide)>#endTurn{grid-column:1/-1}
+ #game #tacticHand .turn-head{font-size:12px;line-height:16px;margin:0}
+ .tutorial-running #game #mobileDock{min-height:0;flex:1 1 auto}
+ .tutorial-running #game[data-phase=battle] #mobileDock{flex:0 1 auto}
+ .tutorial-running #tutorialGuide{max-height:22dvh;overflow:auto;flex-shrink:0}
+}
+
+/* Recruitment cards start at the same top edge, regardless of rule length. */
+#game #offers .shop-offer>.offer{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;text-align:center;gap:0}
+#game #offers .offer>.card-rarity{flex:none;min-height:18px;line-height:18px}
+#game #offers .offer>.symbol{flex:none;display:grid;place-items:center;min-height:72px}
+#game #offers .offer>strong{flex:none;min-height:42px;line-height:14px;align-content:start;margin:0}
+#game #offers .offer>small:not(.offer-upgrade):not(.recruit-hint){flex:none;min-height:42px;line-height:14px;margin:0}
+#game #offers .offer>.offer-upgrade,#game #offers .offer>.recruit-hint{flex:none}
+#game #offers .offer>.badge{margin-top:auto;padding-top:6px}
+@media(max-width:760px){
+ #game #offers .offer>.symbol{height:48px;min-height:48px}
+ #game #offers .offer>.symbol .unit-art{width:44px;height:44px}
+ #game #offers .offer>small:not(.offer-upgrade):not(.recruit-hint){min-height:42px}
+}
+@media(max-width:760px){
+ #game #offers .offer>strong{min-height:28px}
+ #game #offers .offer>small:nth-of-type(2){min-height:28px}
+}
+
+/* Empty reserve rows keep their drop targets without consuming card height. */
+@media(max-width:760px){
+ #game #benchBoard{grid-template-rows:var(--reserve-row-sizes);align-content:start}
+ #game #benchBoard .slot.reserve-row-empty{min-height:44px;padding:4px}
+}
+
+
+/* The artwork occupies only the perimeter: no badges over card content. */
+#game :is(.unit-card,.fighter:not(.campaign-boss))[data-race]{position:relative;isolation:isolate;border-radius:8px}
+#game :is(.unit-card,.fighter:not(.campaign-boss))[data-race]::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;border:8px solid transparent;border-image:var(--folk-frame) 82 / 8px / 0 stretch}
+#game :is(.unit-card,.fighter:not(.campaign-boss))[data-race]> *{position:relative;z-index:1}
+#game .unit-card[data-rarity="Selten"],#game .fighter[data-rarity="Selten"]{border-color:#58d7ff;box-shadow:0 0 0 1px #58d7ff,0 0 8px #58d7ff55}
+#game .unit-card[data-rarity="Episch"],#game .fighter[data-rarity="Episch"]{border-color:#eda0ff;box-shadow:0 0 0 2px #eda0ff,0 0 9px #da73f866}
+#game .unit-card.selected{outline:2px solid #ffe083;outline-offset:2px}
+#game .offer[data-rarity="Selten"],#game .library-card[data-rarity="Selten"]{border-top:4px solid #58d7ff}
+#game .offer[data-rarity="Episch"],#game .library-card[data-rarity="Episch"]{border-top:5px double #eda0ff}
+#game .card-rarity{font-weight:800}
+#game .unit-card{padding:10px!important}
+@media(max-width:760px){
+ #game #mobileFormation:not(.formation-collapsed){height:auto;min-height:252px;grid-template-rows:auto minmax(94px,auto) auto minmax(94px,auto)}
+ #game #mobileFormation .slot.filled,#game #benchBoard .slot.filled{min-height:94px;padding:9px!important}
+ #game #mobileFormation .unit,#game #benchBoard .unit{grid-template-rows:minmax(28px,auto) minmax(16px,auto) auto;row-gap:2px;min-width:0}
+ #game #mobileFormation .name,#game #benchBoard .name{padding:0;min-width:0}
+ #game #mobileFormation .unit-numbers,#game #benchBoard .unit-numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px 3px;white-space:normal;justify-items:start;text-align:left;font-size:12px;line-height:14px}
+ #game .unit-numbers>span{white-space:nowrap}
+ #game #mobileFormation .priority-mark,#game #benchBoard .priority-mark{display:none}
+ #game .battle-cell .fighter:not(.campaign-boss){padding:9px}
+ #game .battle-cell .fighter .f-name{padding-right:0}
+}
+#game [data-race="humans"][data-level="1"]{--folk-frame:url("assets/frames/humans-1.webp?v=73")}
+#game [data-race="humans"][data-level="2"]{--folk-frame:url("assets/frames/humans-2.webp?v=73")}
+#game [data-race="humans"][data-level="3"]{--folk-frame:url("assets/frames/humans-3.webp?v=73")}
+#game [data-race="elves"][data-level="1"]{--folk-frame:url("assets/frames/elves-1.webp?v=73")}
+#game [data-race="elves"][data-level="2"]{--folk-frame:url("assets/frames/elves-2.webp?v=73")}
+#game [data-race="elves"][data-level="3"]{--folk-frame:url("assets/frames/elves-3.webp?v=73")}
+#game [data-race="orcs"][data-level="1"]{--folk-frame:url("assets/frames/orcs-1.webp?v=73")}
+#game [data-race="orcs"][data-level="2"]{--folk-frame:url("assets/frames/orcs-2.webp?v=73")}
+#game [data-race="orcs"][data-level="3"]{--folk-frame:url("assets/frames/orcs-3.webp?v=73")}
+#game [data-race="undead"][data-level="1"]{--folk-frame:url("assets/frames/undead-1.webp?v=73")}
+#game [data-race="undead"][data-level="2"]{--folk-frame:url("assets/frames/undead-2.webp?v=73")}
+#game [data-race="undead"][data-level="3"]{--folk-frame:url("assets/frames/undead-3.webp?v=73")}
+
+/* Rarity stays outside the readable card interior. */
+#game .unit-card.rarity-legendary,#game .fighter.rarity-legendary{border-color:#ffe28b;box-shadow:0 0 0 2px #9f712e,0 0 12px #edc96766}
+#game :is(.offer,.library-card).rarity-legendary{border-top:4px solid #ffe28b;box-shadow:0 0 0 1px #b38736,0 0 12px #edc96744}
+#game .rarity-legendary .card-rarity{color:#ffe28b;font-weight:800}
+#game .fighter.boss-frame{position:relative;isolation:isolate;padding:12px;border-color:#c9a360}
+#game .battle-cell .fighter.boss-frame[data-boss-campaign]::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;border:10px solid transparent;border-image:var(--campaign-frame) 112 / 10px / 0 stretch}
+#game .fighter.boss-frame > *{position:relative;z-index:1}
+#game .fighter.boss-frame[data-boss-campaign="crown"]{--campaign-frame:url("assets/frames/boss-crown.webp?v=73")}
+#game .fighter.boss-frame[data-boss-campaign="rift"]{--campaign-frame:url("assets/frames/boss-rift.webp?v=73")}
+#game .fighter.boss-frame[data-boss-campaign="frost"]{--campaign-frame:url("assets/frames/boss-frost.webp?v=73")}
+#game .fighter.boss-frame[data-boss-campaign="embers"]{--campaign-frame:url("assets/frames/boss-embers.webp?v=73")}
+#game .fighter.boss-frame[data-boss-campaign="depths"]{--campaign-frame:url("assets/frames/boss-depths.webp?v=73")}
+#game .fighter.boss-frame[data-boss-campaign="eclipse"]{--campaign-frame:url("assets/frames/boss-eclipse.webp?v=73")}
+
+/* Narrow screens request smaller landscapes; figures retain nearest-neighbor rendering. */
+@media(max-width:760px){
+ body[data-faction]{background-image:linear-gradient(#08121b55,#08121b99),var(--faction-art-mobile,var(--faction-art))}
+ body[data-faction] #arena{background-image:linear-gradient(#07101840,#07101870),var(--arena-art-mobile,var(--arena-art))}
+}
+
+/* Chapter scenery and named witnesses remain separate from combat controls. */
+.campaign-atmosphere{margin:10px 0;padding:10px;border:1px solid var(--trim,#bba16a);border-radius:10px;background:var(--surface-deep,#102a35);color:var(--ink,#f6f1df)}
+.scene-meeting{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;align-items:start}
+.chapter-scenery{width:100%;aspect-ratio:1;background-image:var(--chapter-scenery);background-size:200% 200%;background-position:var(--chapter-position);border:1px solid #a89060;border-radius:8px;image-rendering:auto}
+.campaign-atmosphere h3{font:700 1rem/1.4 Georgia,serif;margin:2px 0 6px;color:var(--accent,#f4d58e)}
+.campaign-atmosphere small,.witness-role{font-size:.875rem;line-height:1.4;color:#c0d3cf}
+.witness-line{margin:5px 0;font-size:1rem;line-height:1.5}.witness-line b,.witness-role,.witness-line q{display:block}.witness-line q{margin-top:4px}
+.decision-trace{margin:10px 0 0;padding:8px 10px;border-left:3px solid var(--trim,#bba16a);background:#193a4480;font-size:1rem;line-height:1.5;overflow-wrap:anywhere}
+.decision-trace b{display:block;font-size:.875rem;color:var(--accent,#f4d58e)}.decision-trace span{display:block}
+.earlier-traces summary{padding:12px 0;font-size:.875rem;cursor:pointer}.campaign-closing{margin-top:16px;font-size:1rem;line-height:1.5}
+body[data-chapter-scenery]:not([data-chapter-scenery=none]) #game #arena{background-image:linear-gradient(#07101860,#07101890),var(--chapter-scenery);background-size:cover,200% 200%;background-position:center,var(--chapter-position)}
+@media(max-width:760px){.scene-meeting{grid-template-columns:72px minmax(0,1fr);gap:9px}.campaign-atmosphere{padding:8px}.campaign-atmosphere h3{font-size:1rem}.witness-role{margin-top:2px}}
+@media(max-width:360px){.scene-meeting{grid-template-columns:1fr}.chapter-scenery{width:72px}}
+
+.path-card .path-reason{font-size:13px;line-height:1.5;margin:8px 0;color:inherit}
+.encounter-mission,.encounter-result{grid-column:1/-1;border:1px solid #76674b;border-radius:12px;padding:12px 14px;margin:8px 0;background:#191f24;color:#eee5d0;text-align:left}
+.encounter-mission p,.encounter-result p{margin:6px 0 0;font-size:14px;line-height:1.55}
+#game[data-phase=battle] #arena .arena-label.top{line-height:1.35;white-space:normal;text-align:center}
+@media(max-width:600px){.path-card .path-reason{font-size:12px}.encounter-mission,.encounter-result{padding:10px 12px}}
+
+#game .support-explanation{margin:7px 0;padding:9px 11px;border-left:3px solid #cbbc7e;background:#182b35;color:#e7efed;font-size:14px;line-height:1.55}
+/* Level indicators stay in the existing frame gutters, outside names and values. */
+#game :is(.unit-card,.fighter,.offer){position:relative;--level-light:#e4f0f3;--level-rim:#a6bec5}
+#game [data-level="2"]{--level-light:#80efff;--level-rim:#55d8ee}
+#game [data-level="3"]{--level-light:#ffe294;--level-rim:#efc363}
+#game :is(.unit-card,.fighter){padding-inline:10px!important}
+#game .level-crystals{position:absolute;inset:0;z-index:6;pointer-events:none}
+#game .crystal-rail{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:3px;width:7px}
+#game .crystal-rail.left{left:1px}
+#game .level-crystal{display:block;position:relative;flex:none;width:7px;height:9px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#7c9098}
+#game .level-crystal::after{content:"";position:absolute;inset:1px;clip-path:inherit;background:#102331}
+#game .level-crystal.lit{background:#f1f8ff;filter:drop-shadow(0 0 1px var(--level-light))}
+#game .level-crystal.lit::after{background:linear-gradient(135deg,#fff 0,var(--level-light) 45%,var(--level-rim) 100%)}
+#game .tier-high{--level-light:#ffe294;--level-rim:#efc363}
+#game :is(.unit-card,.fighter)[data-level="1"]{box-shadow:inset 0 0 0 1px var(--level-rim)}
+#game :is(.unit-card,.fighter)[data-level="2"]{box-shadow:inset 0 0 0 2px var(--level-rim)}
+#game :is(.unit-card,.fighter)[data-level="3"]{box-shadow:inset 0 0 0 2px var(--level-rim),inset 0 0 0 4px #685526}
+#game :is(.unit-card,.fighter).selected,#game :is(.unit-card,.fighter).pick{outline:3px solid #f5d575;outline-offset:-3px}
+
+#game .level-crystals::before{content:"";position:absolute;inset:0;border:1px solid var(--level-rim);border-radius:7px;opacity:.9}
+#game [data-level="2"]>.level-crystals::before{border-width:3px;border-style:double}
+#game [data-level="3"]>.level-crystals::before{border-width:4px;border-style:double}
+
+/* Selected orders stay in the document flow instead of covering the card. */
+#selectedCardInfo .selected-priority{margin:8px 0;padding:7px 9px;border-left:2px solid #cbaa69;background:#102b36;overflow-wrap:anywhere;line-height:1.45}
+@media(min-width:761px){
+ #game #mobileFormation .slot.filled .unit{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;min-width:0;text-align:center}
+ #game #mobileFormation .slot.filled .card-rarity{font-size:12px;line-height:1.3}
+ #game #mobileFormation .slot.filled .symbol{display:flex;align-items:center;justify-content:center;height:88px;width:100%;margin:0}
+ #game #mobileFormation .slot.filled .unit-art{width:88px;height:88px}
+ #game #mobileFormation .slot.filled .name{font-size:16px;line-height:1.25;max-width:100%;overflow-wrap:anywhere}
+ #game #mobileFormation .slot.filled .spec-label{font-size:12px;line-height:1.35}
+ #game #mobileFormation .slot.filled .role{font-size:13px;line-height:1.35}
+ #game #mobileFormation .slot.filled .card-rule{width:100%;box-sizing:border-box;min-height:0;margin:3px 0;padding:8px;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+ #game #mobileFormation .slot.filled .upgrade-rule{margin-top:6px;padding-top:6px}
+ #game #mobileFormation .slot.filled .unit-kind{display:none}
+ #game #mobileFormation .slot.filled .unit-numbers{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;font-size:14px;line-height:1.4}
+}
+
+/* Side gauges must override the folk frame's direct-child position rule. */
+#game :is(.unit-card,.fighter,.offer)[data-race] > .level-crystals{position:absolute;inset:0;display:block;grid-area:auto;width:auto;height:auto;margin:0;z-index:6;pointer-events:none}
+#game .crystal-rail.left{left:3px}
+.journey-summary{margin:8px 0}.journey-summary>summary{cursor:pointer;padding:10px 0;font-size:14px;color:#f0d47f}
+@media(max-width:760px){
+ /* One document scroll: no fixed pane can cover shop/chronicle/rewards. */
+ html:has(body.playing),body.playing{height:auto;min-height:100%;overflow-y:auto}
+ body.playing .wrap{height:auto;min-height:100dvh;max-height:none;overflow:visible;display:flex;flex-direction:column}
+ body.playing #game{height:auto;min-height:0;max-height:none;overflow:visible;display:flex;flex-direction:column;flex:0 0 auto}
+ #game #mobileFormation:not(.formation-collapsed){position:static;height:auto;min-height:0;display:grid;grid-template-rows:auto auto auto auto;gap:4px;flex:none}
+ #game #mobileFormation .board{align-items:stretch;gap:5px}
+ #game #mobileFormation .slot{min-height:44px;height:auto}
+ #game #mobileFormation .slot.filled,#game #benchBoard .slot.filled{min-height:104px;padding:7px 8px 7px 13px!important}
+ #game #mobileFormation .unit,#game #benchBoard .unit{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;min-width:0;text-align:center}
+ #game #mobileFormation .symbol,#game #benchBoard .symbol{display:flex;align-items:center;justify-content:center;height:26px;width:100%;margin:0;grid-area:auto}
+ #game #mobileFormation .unit-art,#game #benchBoard .unit-art{width:28px;height:28px}
+ #game #mobileFormation .name,#game #benchBoard .name{display:block;width:100%;max-width:100%;height:auto;font-size:14px;line-height:1.2;white-space:normal;overflow:visible;text-overflow:clip;word-break:normal;overflow-wrap:anywhere;hyphens:auto;text-align:center}
+ #game #mobileFormation .unit-kind,#game #benchBoard .unit-kind{font-size:12px;line-height:16px;text-align:center;white-space:normal;overflow:visible}
+ #game #mobileFormation .unit-numbers,#game #benchBoard .unit-numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:1px 3px;font-size:12px;line-height:16px;justify-items:center}
+ #game #mobileFormation .muted{font-size:12px;line-height:1.3}
+ #game #mobileFormation.formation-collapsed{height:auto;min-height:36px;display:block}
+ #game .formation-label{flex-wrap:wrap;font-size:13px;gap:4px}
+ #game #synergySummary{font-size:12px;max-width:100%;white-space:normal}
+ #game #mobileDock,#game[data-phase=battle] #mobileDock{position:static;display:flex;flex-direction:column;height:auto;min-height:0;max-height:none;overflow:visible;flex:0 0 auto;gap:8px}
+ #game #mobileTabs{position:static;flex:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+ #game #mobileTabs button{font-size:14px;min-height:40px}
+ #game #mobileRoute,#game #mobileArmy,#game #mobileCommands,#game #mobileStory,#game #synergyDetails,#game #mobileDock>#shop{height:auto;min-height:0;max-height:none;overflow:visible;flex:0 0 auto;padding:4px 0}
+ #game #mobileDock[data-tab=shop]>#shop{overflow:visible}
+ #game #shop>#offers{height:auto;min-height:0;max-height:none;overflow:visible;flex:none;align-items:stretch}
+ #game #offers .shop-offer{min-width:0;display:flex;flex-direction:column}
+ #game #offers .shop-offer>.offer{height:auto;min-height:0;flex:1;padding:8px 6px 8px 13px;gap:5px;overflow:visible}
+ #game #offers .offer>strong{font-size:14px;line-height:1.3;min-height:0;height:auto;hyphens:auto}
+ #game #offers .offer>small:not(.offer-upgrade):not(.recruit-hint){font-size:12px;line-height:1.4;min-height:0;height:auto}
+ #game #offers .offer>.symbol{height:44px;min-height:44px}
+ #game #offers .offer-upgrade{display:block;min-height:0;line-height:1.4}
+ #game #offers .offer-lock{min-height:40px;font-size:12px}
+ #game #reroll{position:static;margin-top:8px;min-height:44px}
+ #game #mainAction{position:static;margin:0!important;min-height:44px;flex:none}
+ #game[data-phase=reward] #mobileDock>#reward{display:flex!important;flex-direction:column;grid-template-rows:none;height:auto;min-height:0;max-height:none;overflow:visible;padding:0;gap:10px;flex:none}
+ #game #reward>*{height:auto;min-height:0;flex:none}
+ #game #reward .reward-card{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:start;height:auto;min-height:0;max-height:none;overflow:visible;padding:12px;gap:10px;text-align:left;white-space:normal}
+ #game #reward .reward-card>span{min-width:0;overflow-wrap:anywhere}
+ #game #reward .reward-card b{font-size:16px;line-height:1.35}
+ #game #reward .reward-card em,#game #reward .reward-card p{font-size:14px;line-height:1.5}
+ #game #reward .reward-card small{display:block;font-size:12px;line-height:1.4}
+ #game #reward .reward-title{display:none}
+ #game[data-phase=end] .journey-summary{display:none}
+ /* Combat names own the full width; the gauge stays inside the frame. */
+ #game .battle-cell .fighter{display:flex;flex-direction:column;align-items:center;gap:2px;height:auto;min-height:0;padding:7px 7px 7px 13px!important;max-width:100%;width:100%;box-sizing:border-box}
+ #game .battle-cell .figure{display:flex;align-items:center;justify-content:center;height:26px;width:100%;grid-area:auto}
+ #game .battle-cell .figure .unit-art{width:28px;height:28px}
+ #game .battle-cell .fighter .f-name{width:100%;max-width:100%;font-size:13px;line-height:1.2;padding:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;hyphens:auto;text-align:center}
+ #game .battle-cell .fighter .unit-kind{font-size:12px;line-height:14px;padding-right:0;text-align:center;white-space:normal;overflow:visible}
+ #game .battle-cell .unit-numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px 3px;font-size:12px;line-height:14px;width:100%;justify-items:center}
+ #game .battle-cell .f-bar{width:100%;flex:none}
+ #game[data-phase=battle] #arena{height:auto;min-height:0;flex:none;grid-template-rows:auto auto auto auto auto;overflow:visible}
+ #game[data-phase=battle] #arena #battleGrid,#game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{min-height:0;grid-template-rows:repeat(2,minmax(110px,auto)) 12px repeat(2,minmax(110px,auto));gap:5px;position:static}
+ #game #arena .battle-row{align-items:center;min-height:0}
+ #game #arena .battle-note{white-space:normal;height:auto}
+ #game #heroBadge,#game .campaign-atmosphere{margin-top:0}
+}
+
+/* Screenshot review: concise cards, independently accessible detail sections. */
+#game #offers .offer-details{font-size:14px;line-height:1.45;text-align:left;border:1px solid var(--trim,#65838b);border-radius:8px;background:var(--surface-deep,#102a35);padding:0 8px;min-width:0;overflow-wrap:anywhere}
+#game #offers .offer-details>summary{cursor:pointer;min-height:40px;display:list-item;padding:10px 0;color:var(--accent,#f0d47f)}
+#game #offers .offer-details p,#game #offers .offer-details .recruit-hint{font-size:14px!important;line-height:1.45;min-height:0;margin:8px 0}
+#game #offers .fusion-ready{font-size:12px;color:#b4ebd2}
+#game #offers .offer>.badge{position:static;margin-top:auto;padding-top:6px;font-size:14px}
+#game #heroBadge{display:flex;flex-direction:column;align-items:stretch;gap:10px;text-align:left}
+#game #heroBadge .hero-badge-head{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center;width:100%}
+#game #heroBadge .hero-badge-head>span{width:72px;display:flex;justify-content:center}
+#game #heroBadge .hero-badge-head .game-art{width:72px;height:88px;max-width:100%;object-fit:contain}
+#game #heroBadge .hero-badge-head b{display:block;font-size:16px;line-height:1.35;color:var(--accent,#f0d47f)}
+#game #heroBadge .hero-badge-head small{display:block;font-size:14px;line-height:1.4;margin-top:4px}
+#game #heroBadge>small{grid-column:auto;font-size:14px;line-height:1.5;width:100%}
+#game #reward .reward-card{display:flex;flex-direction:column;align-items:stretch;gap:8px;text-align:left;cursor:default}
+#game #reward .reward-card:hover{transform:none}
+#game #reward article>header{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:center}
+#game #reward article>header b{display:block;font-size:16px;line-height:1.35}
+#game #reward article>header small{display:block;font-size:12px;line-height:1.4}
+#game #reward .reward-summary{font-size:14px;line-height:1.5;margin:0}
+#game #reward .reward-details{font-size:14px;line-height:1.5}
+#game #reward .reward-details>summary{cursor:pointer;min-height:40px;padding:10px 0;color:var(--accent,#f0d47f)}
+#game #reward .reward-details .reward-card-info{font-size:14px;line-height:1.5}
+#game #reward article>.btn{min-height:44px;margin-top:auto;white-space:normal;font-size:14px;line-height:1.4}
+@media(max-width:760px){
+ #game #offers .shop-offer>.offer{flex:1;gap:4px;padding:8px 7px 8px 13px}
+ #game #offers .offer>.symbol{height:56px;min-height:56px;display:flex;align-items:center;justify-content:center}
+ #game #offers .offer>.symbol .unit-art{width:56px;height:56px}
+ #game #offers .offer>.card-rarity{font-size:12px;line-height:1.3}
+ #game #offers .offer-lock{font-size:12px;line-height:1.3;padding:6px 3px}
+ #game #mobileFormation.formation-compact:not(.formation-collapsed) .slot.filled{min-height:76px;padding:5px 7px 5px 12px!important}
+ #game #mobileFormation.formation-compact .unit{display:grid;grid-template-columns:32px minmax(0,1fr);gap:2px 4px;align-items:center}
+ #game #mobileFormation.formation-compact .symbol{grid-column:1;grid-row:1 / 3;width:32px;height:36px}
+ #game #mobileFormation.formation-compact .unit-art{width:32px;height:36px}
+ #game #mobileFormation.formation-compact .name{grid-column:2;font-size:13px;text-align:left}
+ #game #mobileFormation.formation-compact .unit-kind{grid-column:2;text-align:left;font-size:12px}
+ #game #mobileFormation.formation-compact .unit-numbers{grid-column:1 / -1;display:flex;flex-wrap:wrap;justify-content:center;gap:4px;font-size:12px}
+ #game #mobileFormation.formation-compact .slot:not(.filled){min-height:44px;font-size:12px;padding:4px}
+ #game #mobileFormation.formation-compact .capacity-locked .muted{font-size:0}
+ #game #mobileFormation.formation-compact .capacity-locked .muted::after{content:"🔒";font-size:14px}
+ #game #mobileFormation.formation-compact #synergySummary{max-width:55%;font-size:12px}
+ #game .battle-cell .figure{height:48px;min-height:48px;flex:none}
+ #game .battle-cell .figure .unit-art{width:48px;height:48px}
+ #game .battle-cell .campaign-boss .figure{height:64px;min-height:64px}
+ #game .battle-cell .campaign-boss .figure .unit-art{width:64px;height:64px}
+ #game[data-phase=battle] #arena #battleGrid,#game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{grid-template-rows:repeat(2,minmax(130px,auto)) 12px repeat(2,minmax(130px,auto))}
+}
+@media(max-width:380px){
+ #game #mobileFormation.formation-compact .unit{display:flex;flex-direction:column;gap:1px}
+ #game #mobileFormation.formation-compact .symbol{height:24px;min-height:24px}
+ #game #mobileFormation.formation-compact .unit-art{width:26px;height:26px}
+ #game #mobileFormation.formation-compact .name,#game #mobileFormation.formation-compact .unit-kind{text-align:center}
+ #game #mobileFormation.formation-compact .unit-numbers{gap:2px 4px}
+ #game #heroBadge .hero-badge-head{grid-template-columns:56px minmax(0,1fr);gap:9px}
+ #game #heroBadge .hero-badge-head>span{width:56px}
+ #game #heroBadge .hero-badge-head .game-art{width:56px;height:72px}
+}
+/* Explicit combat selector also wins over boss and faction child rules. */
+#game #battleGrid .fighter[data-race]>.level-crystals{position:absolute;inset:0;display:block;width:auto;height:auto;margin:0;z-index:6;pointer-events:none}
+
+/* Mobile battle owns the viewport; commands remain in a separate bottom row. */
+@media(max-width:760px){
+ html:has(#game[data-phase=battle]),body.playing:has(#game[data-phase=battle]){height:100dvh;overflow:hidden}
+ body.playing #game[data-phase=battle]{position:fixed;inset:calc(env(safe-area-inset-top) + 12px) 3px calc(env(safe-area-inset-bottom) + 3px);height:auto;max-height:none;min-height:0;display:flex;flex-direction:column;overflow:hidden;gap:4px;padding:5px;margin:0 auto}
+ #game[data-phase=battle]>.row{min-height:32px;gap:8px;margin:0;flex:none}
+ #game[data-phase=battle] #heading{font-size:18px;line-height:1.2;margin:1px 0}
+ #game[data-phase=battle] #phase{font-size:12px;line-height:1.2}
+ #game[data-phase=battle] #round{font-size:12px;line-height:1.3;max-width:45%}
+ #game[data-phase=battle] #arena{flex:1 1 0;height:auto;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain;grid-template-rows:auto auto minmax(444px,1fr) auto auto;padding:3px}
+ #game[data-phase=battle] #arena #battleGrid,#game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{position:static;min-height:444px;grid-template-rows:repeat(2,minmax(106px,1fr)) 8px repeat(2,minmax(106px,1fr));gap:3px}
+ #game[data-phase=battle] #arena .battle-row{min-height:0;align-items:center}
+ #game[data-phase=battle] #battleGrid .battle-cell .fighter{display:grid;grid-template-columns:36px minmax(0,1fr);grid-template-rows:auto auto auto 5px;gap:2px 3px;align-items:center;min-height:0;height:auto;width:100%;padding:5px 5px 5px 12px!important}
+ #game[data-phase=battle] #battleGrid .fighter .f-name{grid-column:1/-1;grid-row:1;min-height:0;margin:0;padding:0;line-height:15px;font-size:13px;width:100%;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}
+ #game[data-phase=battle] #battleGrid .fighter .figure{grid-column:1;grid-row:2/4;height:36px;min-height:36px;width:36px;margin:0;display:flex;align-items:center;justify-content:center}
+ #game[data-phase=battle] #battleGrid .fighter .figure .unit-art{width:36px;height:36px;max-width:100%;object-fit:contain}
+ #game[data-phase=battle] #battleGrid .fighter .unit-kind{grid-column:2;grid-row:2;font-size:12px;line-height:15px;width:100%;padding:0;white-space:normal}
+ #game[data-phase=battle] #battleGrid .fighter .unit-numbers{grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;justify-content:center;gap:1px 4px;line-height:15px;font-size:12px;width:100%;min-width:0}
+ #game[data-phase=battle] #battleGrid .fighter .f-bar{grid-column:1/-1;grid-row:4;height:5px;min-height:5px;margin:0;width:100%}
+ #game[data-phase=battle] #battleGrid .campaign-boss .figure,#game[data-phase=battle] #battleGrid .campaign-boss .figure .unit-art{width:36px;height:44px;min-height:44px}
+ #game[data-phase=battle] #mobileDock{position:static;flex:0 0 auto;height:auto;min-height:0;max-height:44dvh;overflow:auto;overscroll-behavior:contain;gap:0;padding:3px 0 0;margin:0}
+ #game[data-phase=battle] #mobileDock>#tacticHand:not(.hide){position:static;inset:auto;transform:none;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:none;height:auto;overflow:visible;padding:5px;margin:0;border:1px solid #c4a257;border-radius:9px;background:var(--surface-deep,#102a35)}
+ #game[data-phase=battle] #tacticHand>.turn-head{font-size:13px;line-height:16px;margin:0}
+ #game[data-phase=battle] #tacticHand #spellToggle{min-height:32px;font-size:13px;padding:4px}
+ #game[data-phase=battle] #tacticHand>.btn,#game[data-phase=battle] #tacticHand #heroPower{min-height:44px;margin:0;padding:5px;font-size:14px;line-height:1.3}
+ #game[data-phase=battle] #tacticHand #battleSpells{max-height:20dvh;overflow:auto;overscroll-behavior:contain}
+ #game[data-phase=battle] #tacticHand .action-preview{max-height:64px;overflow:auto;font-size:13px;line-height:1.4}
+ #game[data-phase=battle] #tacticHand .preview-actions{gap:4px;margin:0}
+ #game[data-phase=battle] #arena #battleNote{line-height:15px;min-height:15px;margin:0}
+ #game[data-phase=battle] #battleTimeline{font-size:12px;line-height:15px;padding:2px 0}
+ #game[data-phase=battle] #battleTimeline .initiative-order{margin:2px 0;gap:3px}
+}
+@media(max-width:760px) and (max-height:760px){
+ #game[data-phase=battle] #arena{grid-template-rows:auto auto minmax(420px,1fr) auto auto}
+ #game[data-phase=battle] #arena #battleGrid,#game[data-phase=battle] #arena:has(.campaign-boss) #battleGrid{min-height:420px;grid-template-rows:repeat(2,minmax(100px,1fr)) 8px repeat(2,minmax(100px,1fr))}
+}
+@media(max-width:760px){
+ #game[data-phase=battle] #tacticHand #battleSpells{max-height:min(20dvh,max(24px,calc(44dvh - 128px)))}
+ #game[data-phase=battle] #tacticHand .action-preview{max-height:min(64px,max(24px,calc(44dvh - 132px)))}
+}
+
+/* Explicit faction difficulty label in the race selector. */
+.race-card .race-difficulty{display:inline-block;min-height:0;margin:6px 0;padding:4px 10px;border:1px solid #d8a65e;border-radius:8px;background:#493a29;color:#ffe1a1;font-size:.75rem;font-weight:800;line-height:1.25}
+
+/* Keep the header and battle in separate flex rows at every viewport size. */
+html:has(body.playing[data-phase=battle]),body.playing[data-phase=battle]{height:100dvh;min-height:0;overflow:hidden}
+body.playing[data-phase=battle] .wrap{height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;display:flex;flex-direction:column;gap:5px;padding-top:max(4px,env(safe-area-inset-top));padding-bottom:max(4px,env(safe-area-inset-bottom))}
+body.playing[data-phase=battle] .top{position:relative;flex:0 0 auto;height:auto;min-height:44px;margin:0;z-index:41}
+body.playing[data-phase=battle]:has(#game[data-phase=battle]) #campaignProgress{position:static;inset:auto;transform:none;width:100%;max-width:none;margin:0;flex:0 0 auto}
+body.playing #game[data-phase=battle]{position:relative;inset:auto;width:100%;height:auto;min-height:0;max-height:none;flex:1 1 0;margin:0;isolation:isolate}
+body.playing[data-phase=battle] .foot{display:none}
+/* Endings use document scrolling, including expanded reports and formation. */
+html:has(body.playing[data-phase=end]),body.playing[data-phase=end]{height:auto;min-height:100%;overflow-y:auto}
+body.playing[data-phase=end] .wrap,body.playing #game[data-phase=end]{height:auto;max-height:none;overflow:visible;flex:0 0 auto}
+body.playing #game[data-phase=end] #mobileDock,body.playing #game[data-phase=end] #mobileDock>#mobileStory,body.playing #game[data-phase=end] #mobileDock>#mobileRoute{height:auto;min-height:0;max-height:none;overflow:visible;flex:0 0 auto}

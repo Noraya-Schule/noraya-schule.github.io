@@ -1,0 +1,308 @@
+/* Controls occupy their own row, never the units' health bars. */
+#battleControls{display:flex;gap:8px;margin:8px 0}
+#battleControls:has(#heroPower.hide):has(#battleFast.hide){display:none}
+#battleControls .hero-power,#battleControls .battle-speed{position:static;transform:none;width:auto;flex:1;min-width:0;box-shadow:none;z-index:auto}
+#mobileTabs{display:none}
+.learning-dialog{width:min(540px,calc(100vw - 20px));max-height:calc(100dvh - 20px);overflow:auto;background:#18323e;color:#f8efd6;border:2px solid #e7bc62;border-radius:14px;padding:14px;font-size:16px}
+.learning-dialog::backdrop{background:#07151ed9}.learning-dialog header{display:flex;align-items:center;justify-content:space-between;gap:8px}.learning-dialog h2{font-size:20px}.learning-dialog p{line-height:1.45}.learning-dialog .btn{font-size:14px;min-height:40px}.learning-dialog section>.btn{width:100%;outline:2px solid #f2d47a;outline-offset:2px}.learning-dialog table{width:100%;border-collapse:collapse;font-size:14px}.learning-dialog td,.learning-dialog th{padding:7px;border-bottom:1px solid #54717c;text-align:left}
+.lesson-field{margin-top:10px;display:grid;gap:7px;background:#28453f;padding:10px;border-radius:10px}.lesson-slot{background:#1a3540;color:#fff0c7;border:1px solid #7b9da0;border-radius:8px;padding:9px;font-size:14px}.lesson-target{outline:3px solid #ffda6e}.lesson-enemy{text-align:center;padding:8px;color:#ffd39b}.lesson-field small{font-size:12px}
+#actionHelp{grid-column:1/-1;font-size:14px}#actionHelp p{line-height:1.4}#battleReport{font-size:14px;padding:6px;background:#19313a;border-radius:6px}#battleReport summary{cursor:pointer;color:#f4d37d}#battleReport p{margin:5px 0}
+@media(max-width:760px){#game[data-phase=shop] #mobileDock>#battleReport{display:block!important;flex:none}#actions #cardDetails{grid-column:1/-1}.learning-dialog{padding:10px}.learning-dialog p{font-size:14px}.learning-dialog .lesson-field{gap:4px;padding:6px}.learning-dialog .lesson-slot{padding:6px}}
+.card-fx{position:absolute;inset:0;z-index:24;pointer-events:none;overflow:hidden;border-radius:inherit}
+.card-fx-particle{position:absolute;left:0;top:0;line-height:1;font-size:24px;will-change:transform,opacity;pointer-events:none}
+@media(max-width:760px){.card-fx-particle{font-size:19px}}
+.formation-label{display:flex;align-items:center;gap:8px}
+#synergySummary{margin-left:auto;min-width:0;max-width:80%;border:1px solid #d8b563;border-radius:6px;background:#19373d;color:#ffe39b;padding:3px 7px;font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+#synergyDetails{margin:8px 0;padding:10px;background:#172f38;border-radius:10px}
+#synergyDetails h3{margin:0 0 6px}
+#synergyDetails>p{font-size:13px}
+.synergy-item{padding:9px;border:1px solid #526b70;border-radius:8px;margin-top:6px}
+.synergy-item.active{border-color:#e7bc62;background:#31443b}
+.synergy-item b{color:#ffe39b}.synergy-item p{font-size:13px;margin:5px 0}.synergy-item small{font-size:12px;color:#bacbd0}
+#game:not([data-phase=shop]) #synergyDetails{display:none}
+#reroll{width:100%;margin-top:8px}
+#actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fighter.attacking{z-index:12}
+.attack-projectile{position:absolute;z-index:25;font-size:30px;color:#ffe39b;text-shadow:0 0 12px #ffc858;pointer-events:none;line-height:1}
+.damage-number{position:absolute;z-index:26;left:50%;top:0;transform:translateX(-50%);color:#fff2cf;font-size:20px;font-weight:900;text-shadow:0 2px 3px #000,0 0 5px #b32525;pointer-events:none;animation:damage-rise .65s ease-out forwards}
+@keyframes damage-rise{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-24px)}}
+body.reduced-motion .damage-number{animation:none}
+#mobileFormation,#mobileDock,#mobileRoute,#mobileCommands,#mobileArmy,#mobileStory{display:contents}
+#game:not([data-phase=shop]) #mobileCommands,#game[data-phase=battle] #mobileArmy,#game[data-phase=battle] #mobileStory,#game[data-phase=battle] #mobileRoute{display:none}
+@media(min-width:761px){
+ #game.battle-pop-open:after{content:'';position:fixed;inset:0;z-index:35;background:#03131acc}
+ #game.battle-pop-open .arena{height:min(520px,calc(100dvh - 340px))}
+ #game.battle-pop-open #tacticHand{max-height:260px;padding:8px}
+ #game.battle-pop-open .tactic-card{min-height:100px}
+ #game.battle-pop-open .tactic-card>b{font-size:14px}
+ #game.battle-pop-open .tactic-card>small{font-size:12px}
+ .battle-pop-open #battleControls{position:fixed;z-index:65;top:8px;left:50%;transform:translateX(-50%);width:min(720px,calc(100vw - 20px));margin:0}
+ .battle-pop-open #battleControls .btn{min-height:40px}
+}
+@media(max-width:760px){
+ body.playing{height:100dvh;overflow:hidden}
+ body.playing .wrap{height:100dvh;max-width:none;padding:env(safe-area-inset-top) 6px env(safe-area-inset-bottom);display:flex;flex-direction:column;gap:5px}
+ .playing .top{flex:none;height:44px;margin:0;gap:5px;flex-wrap:nowrap}
+ .playing .brand{font-size:.85rem;white-space:nowrap}
+ .playing .stats{gap:4px;font-size:12px;width:auto}
+ .playing .pill{padding:5px}
+ .playing .foot{display:none}
+ .playing #game{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;padding:8px;margin:0;border-radius:12px;overflow:hidden}
+ #game>.row{flex:none;min-height:34px}
+ #game h2{font-size:1rem;margin:0}
+ #phase{font-size:12px;letter-spacing:.04em}
+ #round{font-size:12px}
+ #game>.formation-title,#game>#battleViewToggle{display:none!important}
+ #mobileFormation{display:grid;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto minmax(0,1fr);height:clamp(150px,29dvh,250px);flex:none;gap:3px}
+ #mobileFormation .row-label{font-size:12px;margin:0;line-height:16px}
+ #mobileFormation .board{gap:6px;min-height:0}
+ #mobileFormation .slot{min-height:0;padding:3px;border-radius:8px;overflow:hidden}
+ #mobileFormation .symbol{font-size:1.4rem;line-height:1.1}
+ #mobileFormation .name{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #mobileFormation .meta{font-size:12px}
+ #mobileFormation .unit{display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;column-gap:2px}
+ #mobileFormation .symbol{grid-row:1/3;font-size:1.25rem}
+ #mobileFormation .meta{display:block;line-height:14px;white-space:nowrap}
+ #mobileFormation .name{line-height:15px}
+ #mobileFormation .card-rarity,#mobileFormation .role,#mobileFormation .card-rule{display:none}
+ #mobileFormation .mana{top:1px;left:1px;width:20px;height:20px;font-size:12px}
+ #mobileFormation .muted{font-size:12px}
+ #mobileDock{display:flex;flex-direction:column;min-height:0;flex:1;gap:7px;overflow:hidden;border-top:1px solid #526b70;padding-top:7px}
+ #mobileTabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;flex:none}
+ #mobileTabs button{padding:7px 2px;min-height:40px;border:1px solid #647e85;border-radius:7px;background:#17333e;color:#e4e7db;font-size:12px}
+ #mobileTabs button[aria-pressed=true]{background:#e7bc62;color:#172b32;border-color:#ffe299;font-weight:800}
+ #mobileRoute,#mobileArmy,#mobileCommands,#mobileStory,#mobileDock>#shop{display:none;min-height:0;overflow:auto;overscroll-behavior:contain;padding:3px;scrollbar-width:thin}
+ #mobileDock[data-tab=route] #mobileRoute,#mobileDock[data-tab=army] #mobileArmy,#mobileDock[data-tab=commands] #mobileCommands,#mobileDock[data-tab=story] #mobileStory,#mobileDock[data-tab=shop]>#shop{display:block;flex:1}
+ #mobileDock #synergyDetails{display:none;min-height:0;overflow:auto;margin:0;padding:3px;overscroll-behavior:contain}
+ #mobileDock[data-tab=synergy] #synergyDetails{display:block;flex:1}
+ #mobileDock[data-tab=shop]>#shop{display:flex;flex-direction:column;overflow:hidden}
+ #shop>.eyebrow,#shop>#reroll{flex:none}
+ #shop>#reroll{min-height:40px;font-size:13px;padding:5px;margin-top:5px}
+ #shop>#offers{min-height:0;overflow:auto;flex:1;align-items:stretch}
+ #offers .offer{min-width:0;overflow-wrap:anywhere}
+ #offers .offer strong{white-space:normal}
+ #mobileFormation #synergySummary{font-size:12px;line-height:16px;padding:2px 5px}
+ #game[data-phase=reward] #mobileDock>*,#game[data-phase=end] #mobileDock>*,#game[data-phase=battle] #mobileDock>*{display:none!important}
+ #game[data-phase=reward] #mobileDock>#reward{display:grid!important;flex:1;min-height:0;overflow:auto;grid-template-rows:auto repeat(3,minmax(min-content,1fr));gap:6px;padding:4px}
+ #reward .reward-title{padding:0;font-size:14px}
+ #reward .reward-title small{display:none}
+ #reward .reward-card{min-height:0;padding:7px;grid-template-columns:30px 1fr;gap:7px;margin:0}
+ #reward .reward-icon{font-size:1.4rem}
+ #reward .reward-card b{font-size:14px;margin:0}
+ #reward .reward-card em{font-size:12px}
+ #reward .reward-card small{font-size:12px;letter-spacing:0;text-transform:none}
+ #game[data-phase=end] #mobileDock>#mobileStory,#game[data-phase=end] #mobileDock>#mobileRoute{display:block!important;overflow:auto}
+ #game[data-phase=end] #mobileStory{flex:1}
+ #game[data-phase=shop] #mobileDock>#mainAction,#game[data-phase=end] #mobileDock>#mainAction{display:block!important;flex:none}
+ #game[data-phase=end] #mobileStory #heroBadge,#game[data-phase=end] #mobileStory #progressPanel,#game[data-phase=end] #mobileStory .library-fold{display:none}
+ #game[data-phase=battle] #mobileFormation{display:none}
+ #game.battle-pop-open:after{display:none}
+ #game.battle-mode .arena,#game.battle-pop-open .arena{position:relative;inset:auto;left:auto;top:auto;transform:none;width:100%;height:auto;min-height:0;flex:1;margin:0;padding:0;border-width:1px;border-radius:10px;box-shadow:none}
+ #game.battle-mode .arena-grid,#game.battle-pop-open .arena-grid{inset:23px 6px 22px;grid-template-rows:1fr 1fr .55fr 1fr 1fr;gap:2px}
+ #game .battle-cell .figure{font-size:clamp(1.15rem,4dvh,2rem);line-height:1}
+ #game .battle-cell .f-name{font-size:12px;line-height:14px}
+ #game .fighter .f-bar{height:6px;margin:2px}
+ #game .battle-note{font-size:12px;line-height:16px;padding:1px 4px;top:calc(50% - 9px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #game .shield-mark{top:8px;font-size:12px}
+ #game[data-phase=battle] #mobileDock{flex:0 0 auto;max-height:48%;overflow:auto}
+ #game[data-phase=battle] #mobileDock>#battleControls{display:flex!important;flex:none;margin:0}
+ #game[data-phase=battle] #mobileDock>#tacticHand:not(.hide){display:block!important;position:static;transform:none;inset:auto;width:100%;max-height:none;overflow:visible;margin:0;padding:5px;border:0;box-shadow:none}
+ #battleControls .btn{font-size:14px;min-height:40px;padding:6px}
+ #tacticHand .turn-head{font-size:14px;line-height:18px;margin-bottom:5px}
+ #tacticHand .turn-help{display:none}
+ #tacticHand .tactic-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 5px}
+ #tacticHand .tactic-card{min-width:0;min-height:0;padding:5px 3px;overflow-wrap:anywhere}
+ #tacticHand .tactic-card>span{font-size:1.15rem}
+ #tacticHand .tactic-card>b{font-size:12px}
+ #tacticHand .tactic-card>small{font-size:12px;margin-top:3px}
+ #tacticHand .btn{min-height:40px;padding:5px}
+ #game .next-step{outline-width:2px;outline-offset:0;box-shadow:none!important;animation:none}
+ #journeyChoice,#enemyIntel{margin:0 0 6px;padding:7px}
+ #journeyChoice .journey-head{font-size:14px;margin-bottom:5px}
+ #journeyChoice .journey-head small{display:none}
+ #journeyChoice .path-grid{grid-template-columns:1fr 1fr}
+ #journeyChoice .path-card{min-height:0;padding:7px;font-size:14px}
+ #journeyChoice .path-card span{display:none}
+ #journeyChoice .path-card small{font-size:12px;margin-top:3px}
+ #enemyIntel .intel-head{font-size:12px}
+ #enemyIntel .mini-card{padding:2px;font-size:1rem}
+ #enemyIntel .mini-card small{font-size:12px}
+ #enemyIntel .boss-rule{font-size:12px;margin-top:4px;padding:3px}
+ #mainAction{position:static;margin-top:0!important;min-height:42px;font-size:14px;box-shadow:none}
+ #shop>.eyebrow{font-size:12px;letter-spacing:0}
+ #offers{gap:5px}
+ #offers .offer{min-height:0;padding:7px 3px}
+ #offers .offer strong,#offers .offer small{font-size:12px}
+ #offers .offer-upgrade{min-height:0;font-size:12px!important}
+ #offers .card-rarity{font-size:12px;letter-spacing:0}
+ #mobileArmy>.row-label{display:none}
+ #benchBoard{gap:4px}
+ #benchBoard .slot{min-height:54px;padding:3px;border-radius:7px}
+ #benchBoard .symbol{font-size:1.2rem}
+ #benchBoard .name,#benchBoard .muted{font-size:12px}
+ #benchBoard .card-rarity,#benchBoard .card-rule,#benchBoard .role,#benchBoard .meta,#benchBoard .mana{display:none}
+ #actions{gap:4px;margin:6px 0}
+ #actions .btn{font-size:12px;padding:4px;min-height:42px}
+ #hint{font-size:12px;margin:0}
+ #mobileCommands .mana-shop{margin:0 0 6px}
+ #mobileCommands .tactic-shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #mobileCommands .tactic-buy small{font-size:12px}
+ #mobileStory{font-size:14px}
+ #mobileStory .library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px) and (max-height:570px){
+ #offers .offer-upgrade{display:none}
+ #offers .card-rarity,#offers .offer>small:first-of-type{display:none}
+ #offers .offer .symbol{font-size:1.3rem}
+ #mobileFormation{height:140px}
+ #game .battle-cell .figure{font-size:1rem}
+ #game .battle-cell .f-name{font-size:12px}
+ #tacticHand .tactic-card>span{display:none}
+ #game[data-phase=battle] #mobileDock{max-height:55%}
+ #journeyChoice .journey-head{display:none}
+ #journeyChoice .path-card{font-size:12px;padding:5px}
+ #enemyIntel .intel-head{display:block}
+ #enemyIntel .intel-head span{display:block;text-align:left}
+ #enemyIntel .mini-card small{display:none}
+}
+@media(min-width:600px) and (max-width:760px) and (max-height:500px){
+ .playing #game{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);grid-template-rows:auto minmax(0,1fr)}
+ #game>.row{grid-column:1/-1}
+ #game #mobileFormation{grid-column:1;grid-row:2;height:100%;min-height:0}
+ #game #mobileDock,#game[data-phase=battle] #mobileDock{grid-column:2;grid-row:2;height:100%;max-height:none;border-top:0;border-left:1px solid #526b70;padding:0 0 0 7px;gap:4px}
+ #game.battle-mode .arena,#game.battle-pop-open .arena{grid-column:1;grid-row:2;height:100%}
+ #mobileTabs button{min-height:32px;padding:4px}
+ #game #mobileRoute{padding:0}
+ #game #journeyChoice,#game #enemyIntel{margin-bottom:4px;padding:4px}
+ #game #enemyIntel .intel-head{display:flex}
+ #game #battleControls .btn{min-height:34px;font-size:12px}
+ #game #tacticHand .tactic-card{min-height:0}
+ #game[data-phase=reward] #mobileDock>#reward{grid-template-rows:repeat(3,minmax(min-content,1fr));padding:2px;gap:4px}
+ #reward .reward-title,#reward .reward-card small{display:none}
+ #reward .reward-card{padding:5px}
+}
+
+/* Contextual camp decisions */
+.recruit-hint{display:block!important;color:#b5f2ce!important;white-space:normal;overflow-wrap:anywhere;font-size:.875rem!important;line-height:1.35;margin-top:4px}
+#campAdvice{color:#ffe0a0;font-size:.875rem;line-height:1.45;margin:8px 0;padding:8px 10px;border-left:3px solid #dfb753;background:#18303b}
+#campAdvice:empty,#campAdvice[hidden]{display:none}
+.slot.merge-ready{outline:2px solid #8bdcc0;outline-offset:-3px}
+#merge{white-space:normal}
+
+.synergy-item .synergy-current{color:#ffe39b;font-weight:700}.synergy-members{display:block;margin-top:5px}
+
+/* Stable lanes and shared card / combat readouts. */
+.board,.battle-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.board,.battle-row,.slot,.unit,.battle-cell,#mobileFormation,.formation-label{min-width:0;max-width:100%}
+.unit-kind{display:block;font-size:12px;color:#b7e3e0;line-height:16px}
+.unit-numbers{display:flex;justify-content:center;gap:8px;font-size:12px;line-height:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.unit-numbers .shield-mark{position:static!important;display:inline;color:#b8ddff;font-size:inherit!important}
+.level-mark{position:absolute;right:5px;top:2px;font-size:12px;line-height:14px;font-weight:900;color:#c5d8dc;background:#132c37;border-radius:3px;padding:0 3px;z-index:3}
+.slot[data-level="2"],.fighter[data-level="2"]{border:2px solid #63d6ed!important;box-shadow:inset 0 0 0 1px #1d5266}
+.slot[data-level="3"],.fighter[data-level="3"]{border:4px double #e4a6ff!important;box-shadow:inset 0 0 10px #a958dc55}
+[data-level="2"]>.level-mark{color:#80edff}[data-level="3"]>.level-mark{color:#efbbff}
+.slot.selected,.slot.pick{outline:3px solid #f5d575;outline-offset:-3px}
+.battle-cell .fighter{border:1px solid #6b8984;border-radius:9px;padding:3px 2px;background:#15313cd9;max-width:145px;min-width:0;isolation:isolate}
+.battle-cell[data-cell^="e"] .fighter{background:#372b38dc;border-color:#9b737f}
+.battle-cell[data-cell^="e"] .f-bar i{background:#e88e83}
+.fighter .figure{position:relative;z-index:4}
+.fighter .f-name,.fighter .unit-kind{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.fighter.attacking{z-index:15!important}
+.fighter .unit-numbers{gap:4px}.fighter .figure{animation:none}
+@media(max-width:760px){
+ #mobileFormation .board{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #mobileFormation .slot{min-width:0;padding:14px 3px 3px}
+ #mobileFormation .unit{min-width:0;grid-template-columns:20px minmax(0,1fr)}
+ #mobileFormation .symbol{grid-column:1;grid-row:1/3}
+ #mobileFormation .name,#mobileFormation .unit-kind{grid-column:2;min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+ #mobileFormation .unit-kind{line-height:14px}
+ #mobileFormation .unit-numbers{grid-column:1/-1;gap:2px;justify-content:space-between;line-height:15px}
+ #mobileFormation .mana{width:16px;height:16px;font-size:10px;top:0}
+ #mobileFormation .level-mark{top:0;right:3px}
+ #benchBoard .unit-numbers,#benchBoard .unit-kind{display:none}
+ #game .battle-cell .fighter{padding:2px;max-width:100%;width:100%}
+ #game .battle-cell .figure{font-size:clamp(16px,3dvh,24px);line-height:1.1}
+ #game .battle-cell .f-name,#game .battle-cell .unit-kind{font-size:12px;line-height:13px}
+ #game .battle-cell .unit-numbers{gap:2px;justify-content:space-around;line-height:14px}
+ #game .battle-cell .level-mark{font-size:10px;line-height:12px;right:2px;top:1px}
+ #game.battle-mode .arena-grid,#game.battle-pop-open .arena-grid{inset:20px 4px;grid-template-rows:1fr 1fr .35fr 1fr 1fr;gap:3px}
+ #game .battle-row{min-height:0;gap:4px}
+ #game .fighter .f-bar{height:4px;margin:2px 0 0}
+ #game .battle-note{left:2%;width:96%;top:calc(50% - 9px)}
+}
+
+.impact-ring{position:absolute;width:28px;height:28px;border:3px solid;border-radius:50%;pointer-events:none;box-shadow:0 0 10px currentColor}.fighter.attacking .figure{filter:drop-shadow(0 0 7px #f0d994)}
+@media(max-width:760px){#game #mobileFormation{height:clamp(190px,34dvh,280px)}#game #mobileFormation .slot{padding-top:16px}#game #mobileFormation .mana{width:14px;height:14px;font-size:10px}#game #mobileFormation .level-mark{font-size:10px;line-height:12px}}
+@media(min-width:600px) and (max-width:760px) and (max-height:500px){#game #mobileFormation{height:100%}}
+@media(max-width:760px){
+ #game .battle-cell .fighter{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;column-gap:2px;border-width:1px;padding:3px 2px}
+ #game .battle-cell .fighter[data-level="2"],#game .battle-cell .fighter[data-level="3"]{border-width:2px!important}
+ #game .battle-cell .figure{grid-column:1;grid-row:1/3;font-size:20px}
+ #game .battle-cell .f-name,#game .battle-cell .unit-kind{grid-column:2;text-align:left;line-height:12px}
+ #game .battle-cell .f-name{padding-right:10px}
+ #game .battle-cell .unit-numbers,#game .battle-cell .f-bar{grid-column:1/-1;width:100%}
+ #game .battle-cell .unit-numbers{line-height:14px}
+ #game .battle-cell .level-mark{right:0;top:0;padding:0 1px;line-height:10px}
+}
+@media(max-width:760px) and (max-height:700px){
+ #game[data-phase=battle] #mobileDock{max-height:38%;gap:3px;padding-top:3px}
+ #game #battleControls .btn{min-height:32px;font-size:12px;padding:3px}
+ #game #tacticHand{padding:2px!important}
+ #game #tacticHand .turn-head{line-height:16px;margin-bottom:2px}
+ #game #tacticHand .tactic-card{padding:3px 2px}
+ #game #tacticHand .tactic-card>b{line-height:13px;padding-top:7px}
+ #game #tacticHand .tactic-card>small{line-height:13px;margin-top:1px}
+ #game #tacticHand .tactic-cards{gap:4px;margin-bottom:3px}
+ #game #tacticHand .btn{min-height:32px;padding:3px}
+}
+.battle-cell .fighter{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;column-gap:3px}
+.battle-cell .figure{grid-column:1;grid-row:1/3;font-size:30px}
+.battle-cell .f-name,.battle-cell .unit-kind{grid-column:2;text-align:left}
+.battle-cell .f-name{padding-right:12px}
+.battle-cell .unit-numbers,.battle-cell .f-bar{grid-column:1/-1;width:100%}
+@media(max-width:760px){#game .battle-cell .fighter{padding:2px}}
+@media(min-width:600px) and (max-width:760px) and (max-height:500px){
+ #game[data-phase=battle] #mobileDock{max-height:none;height:100%}
+ #game.battle-mode .arena-grid,#game.battle-pop-open .arena-grid{inset:16px 4px;grid-template-rows:1fr 1fr .2fr 1fr 1fr}
+ #game .battle-cell .fighter{padding:0 2px}
+}
+#battleControls #battleViewToggle{position:static;inset:auto;transform:none;flex:1;min-width:0;width:auto;margin:0;font-size:12px;box-shadow:none}
+@media(max-width:760px){#battleControls #battleViewToggle{display:none!important}}
+#game #mobileFormation .level-mark,#game .battle-cell .level-mark{font-size:12px;line-height:13px}
+#game .battle-cell .f-name{padding-right:14px}
+
+/* Reserve cards mirror the field, with compact readouts. */
+.unit-numbers .shield-mark[hidden]{display:none!important}
+.range-tag{position:absolute;top:1px;left:50%;transform:translateX(-50%);font-size:12px;line-height:14px;white-space:nowrap;color:#cce5da}
+#benchBoard .slot{min-width:0;min-height:80px;padding:18px 4px 4px}
+#benchBoard .unit{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:1px 2px;min-width:0}
+#benchBoard .symbol{display:block;font-size:20px;grid-column:1;grid-row:1/3}
+#benchBoard .name,#benchBoard .unit-kind{display:block;grid-column:2;min-width:0;font-size:12px;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#benchBoard .unit-numbers{display:flex;grid-column:1/-1;justify-content:space-around;gap:2px;font-size:12px;line-height:15px}
+#benchBoard .card-rarity,#benchBoard .card-rule,#benchBoard .role{display:none}
+#benchBoard .level-mark{font-size:12px;line-height:14px;right:2px;top:0}
+#benchBoard .mana{display:grid;top:0;left:1px;width:15px;height:15px;font-size:10px}
+#campaignProgress{position:sticky;top:0;z-index:80;flex:none;margin:0 0 5px;gap:3px;padding:2px 0;background:#102331}
+#campaignProgress[hidden]{display:none!important}#campaignProgress .campaign-node{height:5px}
+@media(min-width:761px){body:has(#game.battle-pop-open) #campaignProgress{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(720px,calc(100vw - 20px));margin:0}}
+@media(max-width:760px){.playing #campaignProgress{margin:0;min-height:9px}#mobileFormation .range-tag{top:0}#game #mobileFormation .slot{padding-top:18px}}
+/* Legacy and story panels use the existing dismissible, scrollable detail dialog. */
+.mastery-readout{grid-column:1/-1;line-height:1.45}.mastery-readout b{display:block}
+.legacy-grid,.skin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:10px}
+.legacy-card{padding:12px;border:1px solid #6b858b;border-radius:12px;background:#17333e;margin:8px 0;overflow-wrap:anywhere}
+.legacy-card h3{margin:0 0 8px;color:#efd28a}.legacy-card small,.skin-preview small{display:block;line-height:1.5;color:#c8dbd6}.skin-preview{white-space:normal;min-width:0;text-align:left}.skin-preview[aria-pressed=true]{outline:2px solid #f3d07c}
+.story-teaser{display:block;width:100%;background:#183b44;border:1px solid #567c83;border-radius:8px;color:#e1decd;text-align:left;font:inherit;font-size:12px;padding:7px;margin-top:7px;line-height:1.3}.story-teaser span{color:#f0ce74}.recovery-note{font-size:12px;border-left:3px solid #e6c06a;padding:6px;line-height:1.4;color:#f2da9b}.legacy-result{color:#f2d080}
+body[data-card-skin=humans] .unit-card,body[data-card-skin=humans] .fighter{background-image:linear-gradient(125deg,#746135aa,transparent 60%)}
+body[data-card-skin=elves] .unit-card,body[data-card-skin=elves] .fighter{background-image:repeating-linear-gradient(135deg,#6da98a33 0 3px,transparent 3px 18px)}
+body[data-card-skin=orcs] .unit-card,body[data-card-skin=orcs] .fighter{background-image:radial-gradient(ellipse at bottom,#aa502a99,transparent 75%)}
+body[data-card-skin=undead] .unit-card,body[data-card-skin=undead] .fighter{background-image:radial-gradient(ellipse at top,#957cc077,transparent 70%)}
+body[data-card-skin=concord] .unit-card,body[data-card-skin=concord] .fighter{background-image:linear-gradient(135deg,#d5b65855,#67c79244,#db765c44,#9c75cf55)}
+@media(max-width:760px){.story-teaser{font-size:11px;padding:5px}.legacy-grid,.skin-grid{grid-template-columns:1fr}}
+
+.campaign-card.campaign-locked{opacity:1;background:linear-gradient(145deg,#293b44,#172931);border-color:#587079;color:#c3cdd0;cursor:not-allowed}.campaign-card.campaign-locked b{color:#c5cdd0}.campaign-card .campaign-unlock{color:#eac978;font-weight:700}.campaign-card em{line-height:1.45}.campaign-card:disabled:hover{transform:none}.campaign-pick{gap:14px}
+
+/* Initiative shares the existing number row; wrap rather than shrink text. */
+.initiative-stat{white-space:nowrap;color:#a8dfef;font-variant-numeric:tabular-nums}
+.unit-numbers{flex-wrap:wrap;row-gap:1px}
+.initiative-order button small{display:block;font-size:11px;line-height:12px}
+@media(max-width:400px){#game .battle-cell .unit-numbers,#mobileFormation .unit-numbers,#benchBoard .unit-numbers{font-size:12px;column-gap:3px;justify-content:center}}

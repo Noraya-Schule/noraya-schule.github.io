@@ -1,0 +1,37 @@
+{
+  "version": "2.0.1",
+  "variant": "release",
+  "filename": "Bannerwacht-2.0.1-release.apk",
+  "size": 92752507,
+  "sha256": "3d29128440f1cf36e71c444be49806c33d027d3428c6bde47276453e1fe2e898",
+  "sourceCommit": "bc5b381",
+  "build": "local",
+  "parts": [
+    {
+      "path": "parts/bannerwacht-2.0.1-01.bin",
+      "size": 20971520,
+      "sha256": "aa050cb9d8de2611adac902020e65c88ac975bb1d4e8e3d7c8d1543c2b9ee877"
+    },
+    {
+      "path": "parts/bannerwacht-2.0.1-02.bin",
+      "size": 20971520,
+      "sha256": "81a937ac19c27d0e6fbf7f50267519744e89ddaddaf4105d51e6665f9fe2e378"
+    },
+    {
+      "path": "parts/bannerwacht-2.0.1-03.bin",
+      "size": 20971520,
+      "sha256": "d72b91e8763eae30240d07288065dcf3a91081f8bb9715395602032d47733ba4"
+    },
+    {
+      "path": "parts/bannerwacht-2.0.1-04.bin",
+      "size": 20971520,
+      "sha256": "a86bbf7e1aeec855f43524e443f4200ac8a378546b294d95bee3e14a89a09fdb"
+    },
+    {
+      "path": "parts/bannerwacht-2.0.1-05.bin",
+      "size": 8866427,
+      "sha256": "d917a1e6abe55de60ec07ed97ff35709ac3c25b1ffa20c01ab33bc2494e72621"
+    }
+  ],
+  "signerSha256": "daf1cd45557b95c1954f0f7231315926a39ac4d0b0f1dfe2ace1b8b5e077e6f2"
+}
