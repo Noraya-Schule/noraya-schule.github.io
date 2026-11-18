@@ -40,6 +40,28 @@
     .fehler { color:#ff8a8a; min-height:1.5em; margin:0; }
     .leiste { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
     .abmelden { background:none; border:1px solid var(--rand); color:var(--leise); border-radius:10px; padding:8px 14px; font:inherit; cursor:pointer; }
+    .fach { background:var(--karte); border:1px solid var(--rand); border-top:4px solid var(--farbe); border-radius:14px; padding:22px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:10px; transition:transform .15s, border-color .15s; }
+    .fach:hover, .fach:focus-visible { transform:translateY(-3px); border-color:var(--farbe); }
+    .fach h3 { margin:0; font-size:1.25rem; } .fach p { margin:0; color:var(--leise); }
+    .anzahl { margin-top:auto; font-size:.9rem; color:var(--farbe); font-weight:600; }
+    .pfad { color:var(--leise); margin:0 0 20px; font-size:.95rem; }
+    .pfad a { color:var(--leise); } .pfad a:hover { color:var(--text); }
+    main.breit { max-width:1700px; }
+    .geteilt { display:grid; grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr); gap:20px; align-items:start; }
+    .links { display:flex; flex-direction:column; gap:10px; min-width:0; }
+    .reiter { display:flex; align-items:center; gap:12px; justify-content:space-between; }
+    .reiter-titel { font-weight:700; font-size:1.15rem; }
+    .vollbild { color:var(--farbe); font-weight:700; text-decoration:none; white-space:nowrap; }
+    .rahmen { width:100%; height:calc(100vh - 210px); min-height:560px; border:1px solid var(--rand); border-radius:12px; background:#fff; }
+    .hinweis { margin:0; color:var(--leise); font-size:.9rem; }
+    .rechts { background:#141d2a; border:1px solid var(--rand); border-radius:14px; padding:18px; max-height:calc(100vh - 150px); overflow-y:auto; position:sticky; top:16px; }
+    .rechts h2 { margin:0 0 14px; font-size:1.3rem; }
+    .datei { background:var(--karte); border:1px solid var(--rand); border-radius:12px; padding:16px; margin-bottom:14px; display:flex; flex-direction:column; gap:10px; }
+    .datei h3 { margin:0; font-size:1.05rem; } .datei p { margin:0; color:var(--leise); font-size:.95rem; }
+    .knoepfe { display:flex; gap:10px; flex-wrap:wrap; } .knoepfe .knopf { flex:1; padding:10px 14px; }
+    .rechts details { padding:4px 16px; } .rechts summary { font-size:1.02rem; } .rechts details, .rechts table { font-size:.92rem; }
+    .leer { border:1px dashed var(--rand); border-radius:12px; padding:20px; color:var(--leise); }
+    @media (max-width: 900px) { .geteilt { grid-template-columns:1fr; } .rechts { position:static; max-height:none; } .rahmen { height:75vh; } }
     footer { margin-top:56px; padding-top:16px; border-top:1px solid var(--rand); color:var(--leise); font-size:.9rem; max-width:70ch; }
     footer a { color:var(--akzent); }
     [hidden] { display:none !important; }
@@ -48,7 +70,7 @@
 <body>
   <main>
     <div class="leiste">
-      <a class="zurueck" href="../">&larr; Startseite</a>
+      <a class="zurueck" href="../">&larr; Startseite der Website</a>
       <button class="abmelden" id="abmelden" hidden>Abmelden</button>
     </div>
     <form class="anmelden" id="form">
@@ -59,13 +81,14 @@
       <button class="knopf" type="submit" id="los">Öffnen</button>
       <p class="fehler" id="fehler" role="alert"></p>
     </form>
+    <p class="pfad" id="pfad" hidden></p>
     <div id="inhalt" hidden></div>
     <footer>
       <p><a href="../impressum.html">Impressum</a> &middot; <a href="../datenschutz.html">Datenschutz</a></p>
     </footer>
   </main>
 <script>
-const CFG = {"salt": "r+d0NBHrr+mwXBzmY5/8Hw==", "iter": 310000};
+const CFG = {"salt": "J4alI4xNoDYP7bfwOE/NmQ==", "iter": 310000};
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const ub64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
 function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } }
@@ -75,7 +98,10 @@ async function holen(name, key) {
   const buf = new Uint8Array(await r.arrayBuffer());
   return crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
 }
+let KEY = null;
+const encCache = {};
 async function zeigen(key) {
+  KEY = key;
   const html = new TextDecoder().decode(await holen("hub.html", key));
   const box = document.getElementById("inhalt");
   box.innerHTML = html;
@@ -83,7 +109,38 @@ async function zeigen(key) {
   box.hidden = false;
   document.getElementById("form").hidden = true;
   document.getElementById("abmelden").hidden = false;
+  route();
 }
+const NAMEN = { start: "Lehrkräftebereich", lernspiele: "Lernspiele", animationen: "Animationen" };
+async function route() {
+  if (!KEY) return;
+  const box = document.getElementById("inhalt");
+  let v = location.hash.slice(1) || "start";
+  let sec = box.querySelector('[data-view="' + CSS.escape(v) + '"]');
+  if (!sec) { v = "start"; sec = box.querySelector('[data-view="start"]'); }
+  box.querySelectorAll("[data-view]").forEach(s => { s.hidden = s !== sec; });
+  // nicht sichtbare Rahmen leeren, damit nichts im Hintergrund weiterläuft
+  box.querySelectorAll("[data-view]:not([data-view='" + v + "']) iframe").forEach(f => { f.removeAttribute("srcdoc"); f.removeAttribute("src"); });
+  document.querySelector("main").classList.toggle("breit", sec.classList.contains("geteilt"));
+  const pfad = document.getElementById("pfad");
+  if (v === "start") { pfad.hidden = true; }
+  else {
+    const teile = ['<a href="#start">Lehrkräftebereich</a>'];
+    const el = sec.dataset.eltern;
+    if (el) teile.push('<a href="#' + el + '">' + NAMEN[el] + '</a>');
+    teile.push('<span>' + (sec.dataset.titel || NAMEN[v] || v) + '</span>');
+    pfad.innerHTML = teile.join(" &rsaquo; "); pfad.hidden = false;
+  }
+  for (const f of sec.querySelectorAll("iframe")) {
+    if (f.dataset.src && !f.getAttribute("src")) f.src = f.dataset.src;
+    if (f.dataset.enc && !f.hasAttribute("srcdoc")) {
+      if (!encCache[f.dataset.enc]) encCache[f.dataset.enc] = new TextDecoder().decode(await holen(f.dataset.enc, KEY));
+      f.srcdoc = encCache[f.dataset.enc];
+    }
+  }
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
 async function ausSpeicher() {
   const raw = ss("lk-key");
   if (!raw) return;
