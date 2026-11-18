@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waagerechter Wurf – x-Richtung</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --ink:#1d2430; --muted:#5b6575; --line:#d9dee6;
+    --accent:#1f6feb; --accent-soft:#dbe8ff; --shadow:#39414d; --cmp:#e07a10;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45}
+  .wrap{max-width:1180px;margin:0 auto;padding:12px 16px 32px}
+  header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin-bottom:10px}
+  h1{font-size:1.3rem;margin:0}
+  .sub{color:var(--muted);font-size:.95rem}
+  .stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;position:relative}
+  canvas{display:block;width:100%;touch-action:none;border-radius:6px;cursor:crosshair}
+  .readout{display:flex;flex-wrap:wrap;gap:6px 18px;font-variant-numeric:tabular-nums;padding:6px 4px 0;font-size:.95rem}
+  .readout b{font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+  @media(min-width:900px){.grid2{grid-template-columns:1.1fr .9fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .card h2{font-size:1rem;margin:0 0 8px}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  button{font:inherit;font-size:1rem;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-height:44px}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button:active{transform:translateY(1px)}
+  .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:8px 0}
+  .row label{min-width:9.5em}
+  input[type=range]{flex:1;min-width:160px;height:32px}
+  select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);min-height:40px;background:#fff}
+  .val{font-variant-numeric:tabular-nums;min-width:6.5em;font-weight:600}
+  .checks label{display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer}
+  .checks input{width:22px;height:22px}
+  .hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+  ol.tasks{margin:0;padding-left:1.4em}
+  ol.tasks li{margin:0 0 8px}
+  .op{font-weight:600}
+  table.log{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.95rem;margin-top:6px}
+  table.log th,table.log td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:right}
+  table.log th:first-child,table.log td:first-child{text-align:left}
+  .empty{color:var(--muted);font-size:.9rem}
+  .full{grid-column:1/-1}
+  .card h3{font-size:.98rem;margin:16px 0 6px;padding-top:10px;border-top:1px solid var(--line);color:#0b3d91}
+  .card h3:first-of-type{border-top:0;padding-top:0;margin-top:4px}
+  details{margin:4px 0 0}
+  summary{cursor:pointer;color:var(--accent);font-size:.92rem}
+  details p{margin:4px 0 0;font-size:.92rem;color:var(--muted)}
+  .tpl{border-collapse:collapse;margin:6px 0 2px;font-size:.92rem}
+  .tpl td,.tpl th{border:1px solid var(--line);padding:3px 10px;text-align:center;min-width:3.5em}
+  .tpl th{background:#f1f4f8;font-weight:600}
+  .box{border:2px dashed #9db8e8;border-radius:8px;padding:8px 12px;margin:8px 0;background:#f7faff}
+  table.chk input{width:5.2em;font:inherit;font-size:.95rem;padding:4px 6px;border:1px solid var(--line);border-radius:6px;text-align:right}
+  table.chk td.ok input{background:#e3f6e8;border-color:#3a9a55}
+  table.chk td.bad input{background:#fde7e9;border-color:#c62f3e}
+  table.chk td .fb{display:block;font-size:.75rem;color:#c62f3e;min-height:1em}
+  #measDetail p{margin:2px 0}
+  textarea.ans{display:block;width:100%;margin-top:6px;font:inherit;font-size:.95rem;padding:8px 10px;border:1px solid #b9c4d3;border-radius:8px;background:#fffef7;resize:vertical}
+  input.blank{font:inherit;font-size:.95rem;padding:3px 6px;border:none;border-bottom:2px solid #7d93b8;background:#fffef7;border-radius:4px 4px 0 0;max-width:100%}
+  textarea.ans:focus,input.blank:focus,input.mirror:focus{outline:2px solid var(--accent);outline-offset:1px}
+  input.mirror{width:5.2em;font:inherit;font-size:.92rem;padding:3px 6px;border:1px solid var(--line);border-radius:6px;text-align:right;background:#fffef7}
+  .plotwrap{margin:8px 0}
+  canvas.plot{display:block;width:100%;max-width:420px;height:auto;border:1px solid var(--line);border-radius:8px;margin-top:6px;background:#fff}
+  button.danger{background:#fde7e9;border-color:#c62f3e;color:#8a1c27}
+  @media print{ .noprint,.btns,.stage,details summary{display:none} body{background:#fff} .card{border:none;padding:0} textarea.ans{border:1px solid #999;background:#fff} }
+  li.heft{background:#fff8d6;border-left:5px solid #f2b705;border-radius:6px;padding:8px 10px 8px 8px;margin-left:-8px}
+  .heftbadge{display:inline-block;background:#f2b705;color:#3b2a00;font-weight:700;font-size:.8rem;border-radius:999px;padding:1px 9px;margin-right:8px;vertical-align:1px}
+  .heftsum{background:#fff8d6;border:2px solid #f2b705;border-radius:10px;padding:12px 14px;margin-top:18px}
+  .heftsum ol{margin:6px 0 0;padding-left:1.4em} .heftsum li{margin:4px 0}
+  .hshow{font-weight:600;color:#0b3d91;white-space:pre-wrap}
+  .hshow.empty{color:#9a8a50;font-weight:400}
+  .hefcard{border:2px solid #f2b705;background:#fffdf2}
+  .sumtbl table{margin-top:6px;background:#fff}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Animation 1: Die Bewegung in x-Richtung</h1>
+    <span class="sub">Physik · Jg. 11 · Waagerechter Wurf</span>
+  </header>
+
+  <div class="stage">
+    <canvas id="cv" aria-label="Animation waagerechter Wurf"></canvas>
+    <div class="readout">
+      <span>t = <b id="tOut">0,00 s</b></span>
+      <span>Stroboskop: alle <b id="dtOut">0,10 s</b> ein Bild</span>
+      <span id="measOut" class="sub">Messen: auf einen Punkt tippen und zum nächsten ziehen.</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Steuerung</h2>
+      <div class="btns">
+        <button id="play" class="primary">▶ Start</button>
+        <button id="step">Nächstes Bild ⏭</button>
+        <button id="reset">↺ Von vorne</button>
+      </div>
+      <div class="row">
+        <label for="v0">Abwurfgeschwindigkeit v<sub>0</sub></label>
+        <input id="v0" type="range" min="0.5" max="3" step="0.1" value="2">
+        <span class="val" id="v0Out">2,0 m/s</span>
+      </div>
+      <div class="row">
+        <label for="dt">Stroboskop-Zeitabstand</label>
+        <select id="dt">
+          <option value="0.05">Δt = 0,05 s</option>
+          <option value="0.1" selected>Δt = 0,10 s</option>
+        </select>
+        <label for="speed" style="min-width:auto">Tempo</label>
+        <select id="speed">
+          <option value="1">Echtzeit</option>
+          <option value="0.25" selected>Zeitlupe (¼)</option>
+          <option value="0.1">starke Zeitlupe (⅒)</option>
+        </select>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="cGrid" checked> Raster (10 cm) anzeigen</label>
+<label><input type="checkbox" id="cProj" checked> Schatten auf dem Boden anzeigen (Licht von oben)</label>
+<label><input type="checkbox" id="cHide"> Kugel und Bahn ausblenden (nur Schatten)</label>
+<label><input type="checkbox" id="cCmp"> <span class="swatch" style="background:#e07a10"></span>Vergleichskugel auf einer Glasplatte (rollt weiter, ohne zu fallen)</label>
+      </div>
+      <p class="hint">Fallhöhe: Tischkante 1,00 m über dem Boden. Rasterlinien im Abstand von 10 cm. Die y-Achse zeigt nach unten.</p>
+    </div>
+
+    <div class="card">
+      <h2>Messwerkzeug</h2>
+      <p class="hint" style="margin-top:0">Tippe auf einen Punkt und ziehe zu einem anderen. Der Messpunkt rastet an Stroboskop-Bildern und Schatten ein.</p>
+      <div id="measDetail" class="box"><p class="empty">Noch nichts gemessen.</p></div>
+      <h3 style="font-size:.95rem;margin:10px 0 0">Bisherige Messungen</h3>
+      <div id="logWrap"><p class="empty">Noch keine Messung.</p></div>
+      <div class="btns" style="margin:10px 0 0"><button id="clearLog">Messungen löschen</button></div>
+    </div>
+
+    <div class="card full hefcard">
+      <h2>Auswertungstabelle <span class="heftbadge" style="margin-left:6px">✎ Ins Heft</span></h2>
+      <div class="box" style="margin-top:0"><b>x</b> = Ort der Kugel zur Zeit t: Abstand waagerecht von <b>Bild 0</b> bis Bild k.<br><b>Δx</b> = Strecke in <b>einem</b> Zeitintervall Δt: Abstand waagerecht von Bild k−1 bis Bild k, also Δx = x<sub>k</sub> − x<sub>k−1</sub>.</div><p class="hint">Trage deine Mess- und Rechenwerte ein (Komma oder Punkt). „Prüfen“ vergleicht sie mit den <b>aktuellen Einstellungen</b> (v<sub>0</sub> und Δt) der Animation.</p>
+      <div style="overflow-x:auto"><table class="tpl chk" id="evalTbl"></table></div>
+      <div class="btns" style="margin:10px 0 0"><button id="evalBtn" class="primary">Prüfen</button><button id="evalClr">Tabelle leeren</button></div>
+      <p id="evalOut" class="hint"></p>
+    </div>
+
+    <div class="card full">
+      <h2>Arbeitsaufträge</h2>
+      <p class="hint" style="margin-top:0">Du kannst alle Felder direkt hier ausfüllen. Deine Eingaben werden automatisch auf diesem Gerät gespeichert.</p>
+      <div class="btns noprint"><button id="printBtn" type="button">Drucken / als PDF speichern</button><button id="wipeAll" type="button">Alle meine Eingaben löschen</button></div>
+      <h3>A · Einstellen und beobachten</h3><ol class="tasks" start="1">
+<li>Stelle ein: v<sub>0</sub> = 2,0 m/s, Stroboskop Δt = 0,10 s, Tempo „Zeitlupe (¼)“. Drücke „Start“ und <span class="op">beobachte</span> die Kugel.</li>
+<li>Schalte „Kugel und Bahn ausblenden“ ein. Drücke „Von vorne“ und dann „Start“. <span class="op">Beobachte</span> nur den Schatten auf dem Boden.</li>
+<li><span class="op">Beschreibe</span> in einem Satz: Wird der Schatten schneller, langsamer oder bleibt er gleich schnell?<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
+</ol>
+<h3>B · Messen</h3><ol class="tasks" start="4">
+<li>Das ist deine Messtabelle. Du kannst hier oder in der <b>Auswertungstabelle</b> (oben) eintragen, beide Tabellen sind verbunden. Achte auf den Unterschied zwischen x und Δx (Kasten über der Auswertungstabelle).<table class="tpl"><tr><th>Bild</th><th>t in s</th><th>x in cm</th><th>Δx in cm</th></tr><tr><td>0</td><td>0</td><td>0</td><td>–</td></tr><tr><td>1</td><td><span data-m="t-1"></span></td><td><input class="mirror" inputmode="decimal" data-m="x-1"></td><td><input class="mirror" inputmode="decimal" data-m="d-1"></td></tr><tr><td>2</td><td><span data-m="t-2"></span></td><td><input class="mirror" inputmode="decimal" data-m="x-2"></td><td><input class="mirror" inputmode="decimal" data-m="d-2"></td></tr><tr><td>3</td><td><span data-m="t-3"></span></td><td><input class="mirror" inputmode="decimal" data-m="x-3"></td><td><input class="mirror" inputmode="decimal" data-m="d-3"></td></tr><tr><td>4</td><td><span data-m="t-4"></span></td><td><input class="mirror" inputmode="decimal" data-m="x-4"></td><td><input class="mirror" inputmode="decimal" data-m="d-4"></td></tr></table><p class="hint">Bild Nr. k wurde zur Zeit t = k · Δt aufgenommen.</p></li>
+<li><span class="op">Miss</span> mit dem Messwerkzeug den Abstand vom Schatten 0 zum Schatten 1. Trage den Wert in die Tabelle bei Bild 1 in die Spalte x ein.<details><summary>Hilfe</summary><p>Tippe genau auf den Schatten 0 und ziehe zum Schatten 1. Lies den gemessenen Abstand ab.</p></details></li>
+<li><span class="op">Miss</span> genauso den Abstand vom Schatten 0 zu den Schatten 2, 3 und 4. Starte jedes Mal bei Schatten 0. Trage die Werte als x ein.</li>
+<li><span class="op">Berechne</span> die Abstände Δx zwischen benachbarten Bildern: x<sub>1</sub> − x<sub>0</sub>, x<sub>2</sub> − x<sub>1</sub>, … Trage sie in die Spalte Δx ein. Drücke danach in der <b>Auswertungstabelle</b> auf „Prüfen“.</li>
+</ol>
+<h3>C · Auswerten</h3><ol class="tasks" start="8">
+<li><span class="op">Vergleiche</span> die Werte für Δx miteinander. Was fällt dir auf?<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Ergänze den Satz: „In gleichen Zeitabschnitten Δt legt die Kugel in x-Richtung <input class="blank save" size="12" placeholder="" autocomplete="off" data-heft="h1"> Strecken zurück.“</li>
+<li><span class="op">Berechne</span> für die Bilder 1 bis 4 den Quotienten x / t in m/s und trage ihn in der <b>Auswertungstabelle</b> in die Spalte „x / t“ ein.<details><summary>Hilfe</summary><p>Rechne x zuerst in m um. Beispiel: 15 cm = 0,15 m.</p></details></li>
+<li><span class="op">Vergleiche</span> die Werte für x / t mit der eingestellten Abwurfgeschwindigkeit v<sub>0</sub>.<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
+<li>Drücke auf „Diagramm zeichnen“. Es zeichnet ein t-x-Diagramm aus <b>deinen</b> Werten der Tabelle. <span class="op">Beschreibe</span> die Form des Graphen.<div class="plotwrap"><button class="plotBtn" type="button">Diagramm zeichnen</button><canvas class="plot" width="420" height="260"></canvas></div><textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span><span class="op">Gib an</span>, welche Bewegungsart vorliegt: „Die Bewegung in x-Richtung ist eine <input class="blank save" size="18" placeholder="" autocomplete="off" data-heft="h2"> Bewegung.“<details><summary>Hilfe</summary><p>Ihr kennt aus dem aktuellen Unterricht zwei Bewegungsarten: Bei der einen bleibt die Geschwindigkeit gleich, bei der anderen ändert sie sich gleichmäßig.</p></details></li>
+</ol>
+<h3>D · Gleichung aufstellen</h3><ol class="tasks" start="14">
+<li>In Aufgabe 11 hast du einen Zusammenhang zwischen x / t und v<sub>0</sub> gefunden. Schreibe ihn als Gleichung auf: x / t = <input class="blank save" size="10" placeholder="" autocomplete="off"></li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Stelle die Gleichung nach x um.<textarea class="ans save" rows="1" placeholder="Rechenweg …"></textarea><div class="box"><b>Mein Ergebnis für die x-Richtung:</b> x(t) = <input class="blank save" size="14" placeholder="" autocomplete="off" data-heft="h3"></div><p class="hint">Diese Gleichung brauchst du in Animation 2 wieder. Schreibe sie auch in dein Heft.</p></li>
+</ol>
+<h3>E · Überprüfen</h3><ol class="tasks" start="16">
+<li>Stelle v<sub>0</sub> = 1,0 m/s ein. <span class="op">Berechne</span> mit deiner Gleichung, wie weit die Kugel in x-Richtung nach 0,3 s gekommen ist. <span class="op">Miss</span> danach in der Animation nach (Schatten 0 bis Schatten 3).<textarea class="ans save" rows="2" placeholder="Rechnung, Messwert, Vergleich …"></textarea></li>
+<li><span class="op">Untersuche</span> mit einem dritten Wert für v<sub>0</sub> (z. B. 2,5 m/s), ob deine Gleichung weiterhin gilt.<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
+<li>★ Schalte die orange Vergleichskugel auf der Glasplatte ein. <span class="op">Beschreibe</span> deine Beobachtung und <span class="op">erkläre</span> sie mit deinem Ergebnis aus Teil C.<textarea class="ans save" rows="3" placeholder="Deine Antwort …"></textarea></li>
+</ol><div class="heftsum"><h3 style="border:0;margin-top:0;padding-top:0">✎ Das gehört in dein Heft</h3><p class="hint" style="margin-top:0">Diese Übersicht füllt sich mit deinen eigenen Eingaben. Schreibe sie vollständig in dein Heft ab.</p><ol><li>Überschrift: <b>Waagerechter Wurf – Bewegung in x-Richtung</b></li><li>Die vollständige <b>Auswertungstabelle</b> (alle Spalten):<div class="sumtbl"></div></li><li>Dein t-x-Diagramm aus Aufgabe 12.</li><li>In gleichen Zeitabschnitten Δt legt die Kugel in x-Richtung <span class="hshow" data-show="h1"></span> Strecken zurück.</li><li>Die Bewegung in x-Richtung ist eine <span class="hshow" data-show="h2"></span> Bewegung.</li><li><b>x(t) = <span class="hshow" data-show="h3"></span></b></li></ol></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const MODE = "x";           // "x" oder "y"
+const g = 9.81, H = 1.00, R = 0.022;
+const XMIN = -0.48, XMAX = 1.78, YMIN = MODE === "x" ? -0.25 : -0.14, YMAX = H + 0.12;
+const XWALL = 1.62;                // senkrechte Wand (Modus y)
+const C = { ball:"#1f6feb", ghost:"rgba(31,111,235,0.30)", ghostEdge:"#1f6feb",
+            shadow:"#39414d", cmp:"#e07a10", cmpGhost:"rgba(224,122,16,0.28)",
+            grid:"#e6eaf0", grid5:"#cfd6e0", label:"#5b6575", table:"#b98a5a", tableDark:"#8c6239",
+            floor:"#9aa3b0", meas:"#c2185b" };
+
+const $ = id => document.getElementById(id);
+const cv = $("cv"), ctx = cv.getContext("2d");
+const fmt = (v, d) => v.toFixed(d).replace(".", ",");
+
+const state = {
+  t: 0, playing: false, v0: 2.0, dt: 0.1, speed: 0.25,
+  showGrid: true, hideBall: false, showProj: true, showCmp: false,
+  meas: null, log: []
+};
+const tEnd = () => Math.sqrt(2 * H / g);
+
+// ---------- Geometrie ----------
+let W = 0, Hpx = 0, s = 1, ox = 0, oy = 0, dpr = 1;
+function resize(){
+  dpr = window.devicePixelRatio || 1;
+  const cssW = cv.clientWidth;
+  const ratio = (YMAX - YMIN) / (XMAX - XMIN);
+  let cssH = cssW * ratio;
+  const maxH = Math.max(260, window.innerHeight * 0.62);
+  if (cssH > maxH) cssH = maxH;
+  cv.style.height = cssH + "px";
+  cv.width = Math.round(cssW * dpr); cv.height = Math.round(cssH * dpr);
+  W = cssW; Hpx = cssH;
+  s = Math.min(W / (XMAX - XMIN), Hpx / (YMAX - YMIN));
+  ox = (W - s * (XMAX - XMIN)) / 2 - XMIN * s;
+  oy = (Hpx - s * (YMAX - YMIN)) / 2 - YMIN * s;
+  draw();
+}
+const X = x => ox + x * s, Y = y => oy + y * s;
+const invX = px => (px - ox) / s, invY = py => (py - oy) / s;
+
+// ---------- Physik ----------
+function posThrow(t){ return { x: state.v0 * t, y: 0.5 * g * t * t }; }
+function posCmp(t){
+  if (MODE === "x") return { x: state.v0 * t, y: 0 };      // Kugel auf Glasplatte
+  return { x: -0.0, y: 0.5 * g * t * t };                   // senkrecht fallende Kugel
+}
+function strobeTimes(){
+  const out = [], te = tEnd();
+  for (let k = 0; k * state.dt <= Math.min(state.t, te) + 1e-9; k++) out.push(k * state.dt);
+  return out;
+}
+
+// Punkte, an denen das Messwerkzeug einrastet
+function snapTargets(){
+  const pts = [];
+  for (const [i, t] of strobeTimes().entries()){
+    const p = posThrow(t);
+    if (!state.hideBall) pts.push({x:p.x, y:p.y, k:i});
+    if (state.showProj){
+      if (MODE === "x") pts.push({x:p.x, y:H + R, k:i});
+      else pts.push({x:XWALL, y:p.y, k:i});
+    }
+    if (state.showCmp){ const q = posCmp(t); pts.push({x:q.x, y:q.y, k:i}); }
+  }
+  return pts;
+}
+
+// ---------- Zeichnen ----------
+function circle(x, y, r, fill, stroke, lw){
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+  if (fill){ ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1.5; ctx.stroke(); }
+}
+function label(txt, x, y, color, align, base, size){
+  ctx.fillStyle = color || C.label; ctx.textAlign = align || "center"; ctx.textBaseline = base || "middle";
+  ctx.font = (size || 12) + "px system-ui, sans-serif"; ctx.fillText(txt, x, y);
+}
+
+function drawGrid(){
+  if (!state.showGrid) return;
+  for (let i = 0; i <= Math.round((XMAX) / 0.1); i++){
+    const x = i * 0.1; if (x > XMAX) break;
+    ctx.strokeStyle = (i % 5 === 0) ? C.grid5 : C.grid; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(X(x), Y(YMIN + 0.04)); ctx.lineTo(X(x), Y(H + R)); ctx.stroke();
+    if (i % 2 === 0 && x < 1.5) label(Math.round(x * 100) + "", X(x), Y(YMIN + 0.02), C.label, "center", "middle", 11);
+  }
+  for (let j = 0; j <= 10; j++){
+    const y = j * 0.1;
+    ctx.strokeStyle = (j % 5 === 0) ? C.grid5 : C.grid; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(X(0), Y(y)); ctx.lineTo(X(XMAX - 0.04), Y(y)); ctx.stroke();
+    if (j % 2 === 0 && j > 0) label(Math.round(y * 100) + "", X(XMAX - 0.02), Y(y), C.label, "center", "middle", 11);
+  }
+  label("x in cm →", X(XMAX), Y(YMIN + 0.02), C.label, "right", "middle", 11);
+  label("y in cm", X(XMAX), Y(0.05), C.label, "right", "middle", 11);
+  label("↓", X(XMAX - 0.02), Y(0.1) , C.label, "center", "middle", 11);
+}
+
+function drawScene(){
+  // Boden
+  ctx.fillStyle = "#eef0f3"; ctx.fillRect(X(XMIN), Y(H + R), X(XMAX) - X(XMIN), Y(YMAX) - Y(H + R));
+  ctx.strokeStyle = C.floor; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(X(XMIN), Y(H + R)); ctx.lineTo(X(XMAX), Y(H + R)); ctx.stroke();
+  // Tisch
+  ctx.fillStyle = C.table; ctx.fillRect(X(XMIN), Y(R), X(0) - X(XMIN), Math.max(6, 0.035 * s));
+  ctx.fillStyle = C.tableDark;
+  ctx.fillRect(X(-0.07), Y(R) + 0.035 * s, Math.max(4, 0.04 * s), Y(H + R) - Y(R) - 0.035 * s);
+  ctx.fillRect(X(XMIN + 0.03), Y(R) + 0.035 * s, Math.max(4, 0.04 * s), Y(H + R) - Y(R) - 0.035 * s);
+  // Rampe
+  ctx.fillStyle = "#c9ced6";
+  ctx.beginPath(); ctx.moveTo(X(-0.40), Y(-0.12)); ctx.lineTo(X(-0.12), Y(R)); ctx.lineTo(X(-0.40), Y(R)); ctx.closePath(); ctx.fill();
+  label("Rampe", X(-0.33), Y(-0.02), "#6b7380", "center", "middle", 11);
+  // Nulllinie
+  ctx.setLineDash([5, 5]); ctx.strokeStyle = "#9aa3b0"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0.12), Y(0)); ctx.stroke(); ctx.setLineDash([]);
+
+  if (MODE === "x" && state.showCmp){
+    ctx.fillStyle = "rgba(140,190,230,0.35)";
+    ctx.fillRect(X(0), Y(R), X(XMAX - 0.05) - X(0), Math.max(3, 0.012 * s));
+    label("Glasplatte", X(0.9), Y(R) + Math.max(3, 0.012 * s) + 9, "#4c7aa3", "center", "middle", 11);
+  }
+  if (MODE === "y" && state.showProj){
+    ctx.fillStyle = "#e4e7ec"; ctx.fillRect(X(XWALL + 0.03), Y(-0.06), Math.max(6, 0.05 * s), Y(H + R) - Y(-0.06));
+  }
+  if (MODE === "x" && state.showProj){
+    label("Schatten auf dem Boden (Licht von oben)", X(0.02), Y(H + R) + 30, "#6b7380", "left", "middle", 11);
+  }
+  if (MODE === "y" && state.showProj){
+    label("Schatten an der Wand (Licht von links)", X(XWALL + 0.08), Y(H + R) + 30, "#6b7380", "right", "middle", 11);
+  }
+}
+
+function drawStrobe(){
+  const r = Math.max(6, R * s);
+  const times = strobeTimes();
+  times.forEach((t, k) => {
+    const p = posThrow(t);
+    if (state.showProj){
+      if (MODE === "x"){
+        ctx.beginPath(); ctx.ellipse(X(p.x), Y(H + R), r, r * 0.45, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(57,65,77,0.55)"; ctx.fill();
+        ctx.strokeStyle = C.shadow; ctx.lineWidth = 1; ctx.beginPath();
+        ctx.moveTo(X(p.x), Y(H + R) - 4); ctx.lineTo(X(p.x), Y(H + R) + 4); ctx.stroke();
+        label(String(k), X(p.x), Y(H + R) + 12 + (k % 2) * 0, C.shadow, "center", "middle", 10);
+      } else {
+        ctx.beginPath(); ctx.ellipse(X(XWALL), Y(p.y), r * 0.45, r, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(57,65,77,0.55)"; ctx.fill();
+        ctx.strokeStyle = C.shadow; ctx.lineWidth = 1; ctx.beginPath();
+        ctx.moveTo(X(XWALL) - 5, Y(p.y)); ctx.lineTo(X(XWALL) + 5, Y(p.y)); ctx.stroke();
+        label(String(k), X(XWALL) - r - 8, Y(p.y), C.shadow, "right", "middle", 10);
+      }
+    }
+    if (state.showCmp){
+      const q = posCmp(t);
+      circle(X(q.x), Y(q.y), r, C.cmpGhost, C.cmp, 1);
+    }
+    if (!state.hideBall){
+      circle(X(p.x), Y(p.y), r, C.ghost, C.ghostEdge, 1);
+      label(String(k), X(p.x), Y(p.y) - r - 7, C.ghostEdge, "center", "middle", 10);
+    }
+  });
+  // aktuelle Kugeln
+  const tc = Math.min(state.t, tEnd());
+  if (state.showCmp){ const q = posCmp(tc); circle(X(q.x), Y(q.y), r, C.cmp, "#9a4f00", 1.5); }
+  if (!state.hideBall){ const p = posThrow(tc); circle(X(p.x), Y(p.y), r, C.ball, "#0b3d91", 1.5); }
+}
+
+function drawMeas(){
+  const m = state.meas; if (!m) return;
+  const a = m.a, b = m.b || m.a;
+  // Messung nur in einer Richtung: x-Modus waagerecht, y-Modus senkrecht
+  const e = MODE === "x" ? { x: b.x, y: a.y } : { x: a.x, y: b.y };
+  ctx.strokeStyle = C.meas; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(X(b.x), Y(b.y)); ctx.lineTo(X(e.x), Y(e.y)); ctx.stroke();
+  ctx.setLineDash([]); ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(e.x), Y(e.y)); ctx.stroke();
+  const tick = 7, vert = MODE === "x";
+  [a, e].forEach(p => { ctx.beginPath();
+    if (vert){ ctx.moveTo(X(p.x), Y(p.y) - tick); ctx.lineTo(X(p.x), Y(p.y) + tick); }
+    else { ctx.moveTo(X(p.x) - tick, Y(p.y)); ctx.lineTo(X(p.x) + tick, Y(p.y)); }
+    ctx.stroke(); });
+  circle(X(a.x), Y(a.y), 4, C.meas); circle(X(b.x), Y(b.y), 4, C.meas);
+  // Beschriftung der Messstrecke
+  if (m.b){
+    const dist = Math.abs(MODE === "x" ? b.x - a.x : b.y - a.y) * 100;
+    if (dist > 0.2) tag("gemessen: " + fmt(dist, 1) + " cm", (X(a.x) + X(e.x)) / 2 + (MODE === "y" ? -10 : 0), (Y(a.y) + Y(e.y)) / 2 + (MODE === "x" ? -12 : 0), C.meas, MODE === "y" ? "right" : "center");
+  }
+  drawDims();
+}
+function tag(txt, x, y, color, align){
+  ctx.font = "bold 13px system-ui, sans-serif";
+  const w = ctx.measureText(txt).width + 10, h = 20;
+  let x0 = align === "right" ? x - w : align === "left" ? x : x - w / 2;
+  x0 = Math.max(2, Math.min(W - w - 2, x0));
+  ctx.fillStyle = "rgba(255,255,255,0.92)"; ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0, y - h / 2, w, h, 5) : ctx.rect(x0, y - h / 2, w, h); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = color; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(txt, x0 + 5, y + 1);
+}
+const C_POS = "#e07a10", C_DEL = "#2e8b57";
+function dimLine(p1, p2, color, txt, side, labelAt){
+  // Maßlinie mit Pfeilspitzen zwischen p1 und p2 (Pixel)
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
+  const ang = Math.atan2(p2[1] - p1[1], p2[0] - p1[0]), L = 8;
+  [[p2, ang], [p1, ang + Math.PI]].forEach(([p, an]) => {
+    ctx.beginPath(); ctx.moveTo(p[0], p[1]);
+    ctx.lineTo(p[0] - L * Math.cos(an - 0.45), p[1] - L * Math.sin(an - 0.45));
+    ctx.lineTo(p[0] - L * Math.cos(an + 0.45), p[1] - L * Math.sin(an + 0.45)); ctx.closePath(); ctx.fill();
+  });
+  const mx = (p1[0] + p2[0]) / 2, my = labelAt != null ? labelAt : (p1[1] + p2[1]) / 2;
+  if (MODE === "x") tag(txt, mx, my - 13, color, "center"); else tag(txt, mx - 8, my, color, side || "right");
+}
+function guide(x1, y1, x2, y2, color){
+  ctx.strokeStyle = color; ctx.globalAlpha = 0.55; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+}
+function drawDims(){
+  const info = measInfo(); if (!info || info.j == null || info.i == null || info.j === 0) return;
+  const j = info.j, V = MODE === "x" ? "x" : "y";
+  const sub = n => String(n).split("").map(c => "₀₁₂₃₄₅₆₇₈₉"[+c]).join("");
+  const p0 = posThrow(0), pj1 = posThrow((j - 1) * state.dt), pj = posThrow(j * state.dt);
+  if (MODE === "x"){
+    const yPos = Y(-0.15), yDel = Y(-0.06);
+    [[p0.x, C_POS], [pj.x, C_POS], [pj1.x, C_DEL]].forEach(([x, c]) => guide(X(x), yPos - 6, X(x), Y(H + R), c));
+    dimLine([X(p0.x), yPos], [X(pj.x), yPos], C_POS, V + sub(j) + " = " + fmt(info.pos, 1) + " cm");
+    dimLine([X(pj1.x), yDel], [X(pj.x), yDel], C_DEL, "Δ" + V + sub(j) + " = " + fmt(info.delta, 1) + " cm");
+  } else {
+    const xPos = X(1.49), xDel = X(1.34);
+    [[p0.y, C_POS], [pj.y, C_POS], [pj1.y, C_DEL]].forEach(([y, c]) => guide(X(0), Y(y), X(XWALL), Y(y), c));
+    const lab = j > 1 ? (Y(p0.y) + Y(pj1.y)) / 2 : null;
+    dimLine([xPos, Y(p0.y)], [xPos, Y(pj.y)], C_POS, V + sub(j) + " = " + fmt(info.pos, 1) + " cm", "right", lab);
+    dimLine([xDel, Y(pj1.y)], [xDel, Y(pj.y)], C_DEL, "Δ" + V + sub(j) + " = " + fmt(info.delta, 1) + " cm", "right");
+  }
+}
+
+function draw(){
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, Hpx);
+  ctx.fillStyle = "#fbfcfd"; ctx.fillRect(0, 0, W, Hpx);
+  drawScene(); drawGrid(); drawStrobe(); drawMeas();
+  $("tOut").textContent = fmt(Math.min(state.t, tEnd()), 2) + " s";
+}
+
+// ---------- Animation ----------
+let last = null, runId = 0;
+function loop(ts, id){
+  if (!state.playing || id !== runId){ return; }
+  if (last !== null) state.t += (ts - last) / 1000 * state.speed;
+  last = ts;
+  if (state.t >= tEnd()){ state.t = tEnd(); stop(); draw(); return; }
+  draw(); requestAnimationFrame(ts2 => loop(ts2, id));
+}
+function start(){
+  if (state.t >= tEnd() - 1e-9) state.t = 0;
+  state.playing = true; last = null; const id = ++runId;
+  $("play").textContent = "⏸ Pause"; requestAnimationFrame(ts => loop(ts, id));
+}
+function stop(){ state.playing = false; $("play").textContent = "▶ Start"; }
+
+$("play").onclick = () => state.playing ? stop() : start();
+$("step").onclick = () => {
+  stop();
+  if (state.t >= tEnd() - 1e-9) state.t = 0;
+  else {
+    const next = (Math.floor(state.t / state.dt + 1e-6) + 1) * state.dt;
+    state.t = Math.min(next, tEnd());
+  }
+  draw();
+};
+$("reset").onclick = () => { stop(); state.t = 0; state.meas = null; showMeas(); draw(); };
+$("v0").oninput = e => { stop(); clearMarks(); state.t = 0; state.v0 = parseFloat(e.target.value); $("v0Out").textContent = fmt(state.v0, 1) + " m/s"; state.meas = null; showMeas(); draw(); };
+$("dt").onchange = e => { state.dt = parseFloat(e.target.value); updateT(); syncMirror(); if (typeof syncHeft === "function") syncHeft(); clearMarks(); $("dtOut").textContent = fmt(state.dt, 2) + " s"; state.meas = null; draw(); };
+$("speed").onchange = e => { state.speed = parseFloat(e.target.value); };
+const bind = (id, key) => { const el = $(id); if (!el) return; state[key] = el.checked; el.onchange = () => { state[key] = el.checked; state.meas = null; draw(); }; };
+bind("cGrid", "showGrid"); bind("cHide", "hideBall"); bind("cProj", "showProj"); bind("cCmp", "showCmp");
+
+// ---------- Messwerkzeug ----------
+function snap(px, py){
+  let best = null, bd = 22;
+  for (const p of snapTargets()){
+    const d = Math.hypot(X(p.x) - px, Y(p.y) - py);
+    if (d < bd){ bd = d; best = {x:p.x, y:p.y, k:p.k}; }
+  }
+  return best || { x: invX(px), y: invY(py), k: null };
+}
+function evPos(e){ const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+let dragging = false;
+cv.addEventListener("pointerdown", e => {
+  const [px, py] = evPos(e); dragging = true; cv.setPointerCapture(e.pointerId);
+  state.meas = { a: snap(px, py), b: null }; showMeas(); draw();
+});
+cv.addEventListener("pointermove", e => {
+  if (!dragging) return; const [px, py] = evPos(e);
+  state.meas.b = snap(px, py); showMeas(); draw();
+});
+const endDrag = () => {
+  if (!dragging) return; dragging = false;
+  const info = measInfo();
+  if (info && info.dist > 0.2) { state.log.push(info); renderLog(); }
+};
+cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+
+const V = MODE === "x" ? "x" : "y", DIR = MODE === "x" ? "waagerecht" : "senkrecht";
+const coord = k => 100 * (MODE === "x" ? posThrow(k * state.dt).x : posThrow(k * state.dt).y);
+function measInfo(){
+  const m = state.meas; if (!m || !m.b) return null;
+  const dist = Math.abs(MODE === "x" ? m.b.x - m.a.x : m.b.y - m.a.y) * 100;
+  let i = m.a.k, j = m.b.k;
+  if (i != null && j != null && i > j){ const h = i; i = j; j = h; }
+  const out = { dist, i, j };
+  if (i != null && j != null){
+    out.pos = coord(j);
+    out.delta = j > 0 ? coord(j) - coord(j - 1) : null;
+  }
+  return out;
+}
+const sub = k => "<sub>" + k + "</sub>";
+function showMeas(){
+  const info = measInfo(), d = $("measDetail");
+  if (!info){ $("measOut").textContent = "Messen: auf einen Punkt tippen und zum nächsten ziehen."; d.innerHTML = '<p class="empty">Noch nichts gemessen.</p>'; return; }
+  $("measOut").innerHTML = "Gemessener Abstand (" + DIR + "): <b>" + fmt(info.dist, 1) + " cm</b>";
+  if (info.i == null || info.j == null){
+    d.innerHTML = "<p>Gemessener Abstand " + DIR + ": <b>" + fmt(info.dist, 1) + " cm</b></p><p class=\"hint\">Tippe genau auf einen Punkt (Kugel oder Schatten), dann erkennt das Werkzeug die Bildnummer und erklärt die Messung.</p>";
+    return;
+  }
+  const i = info.i, j = info.j, n = j - i;
+  let what;
+  if (n === 0) what = "Anfangs- und Endpunkt sind dasselbe Bild.";
+  else if (i === 0 && n === 1) what = "Diese Strecke ist zugleich der <b>Ort " + V + sub(j) + "</b> (ab Bild 0) und <b>Δ" + V + sub(j) + "</b> (ein Zeitintervall).";
+  else if (i === 0) what = "Weil du bei Bild 0 begonnen hast, ist das der <b>Ort " + V + sub(j) + "</b> der Kugel zur Zeit t = " + fmt(j * state.dt, 2) + " s.";
+  else if (n === 1) what = "Weil die Bilder direkt aufeinander folgen, ist das <b>Δ" + V + sub(j) + "</b>: die Strecke in einem Zeitintervall Δt = " + fmt(state.dt, 2) + " s.";
+  else what = "Das ist die Strecke über " + n + " Zeitintervalle (" + fmt(n * state.dt, 2) + " s). Für die Tabelle brauchst du entweder Bild 0 als Anfang (Ort " + V + ") oder zwei benachbarte Bilder (Δ" + V + ").";
+  let h = "<p>Gemessen " + DIR + " von <b>Bild " + i + "</b> bis <b>Bild " + j + "</b>: <b>" + fmt(info.dist, 1) + " cm</b></p><p>" + what + "</p>";
+  if (j > 0){
+    h += '<table class="log"><thead><tr><th>Für Bild ' + j + '</th><th>Strecke</th><th>Wert</th></tr></thead><tbody>' +
+      "<tr><td style=\"color:#e07a10;font-weight:600\">Ort " + V + sub(j) + "</td><td>Bild 0 → Bild " + j + "</td><td>" + fmt(info.pos, 1) + " cm</td></tr>" +
+      "<tr><td style=\"color:#2e8b57;font-weight:600\">Δ" + V + sub(j) + "</td><td>Bild " + (j - 1) + " → Bild " + j + "</td><td>" + fmt(info.delta, 1) + " cm</td></tr></tbody></table>";
+  }
+  d.innerHTML = h;
+}
+function renderLog(){
+  const w = $("logWrap");
+  if (!state.log.length){ w.innerHTML = '<p class="empty">Noch keine Messung.</p>'; return; }
+  let h = '<table class="log"><thead><tr><th>Nr.</th><th>gemessen</th><th>Abstand in cm</th><th>' + V + ' in cm</th><th>Δ' + V + ' in cm</th></tr></thead><tbody>';
+  state.log.forEach((m, n) => {
+    const known = m.i != null && m.j != null;
+    h += "<tr><td>" + (n + 1) + "</td><td>" + (known ? "Bild " + m.i + " → " + m.j : "frei") + "</td><td>" + fmt(m.dist, 1) + "</td><td>" +
+      (known && m.j > 0 ? fmt(m.pos, 1) : "–") + "</td><td>" + (known && m.j > 0 ? fmt(m.delta, 1) : "–") + "</td></tr>";
+  });
+  w.innerHTML = h + "</tbody></table>";
+}
+$("clearLog").onclick = () => { state.log = []; renderLog(); state.meas = null; showMeas(); draw(); };
+
+
+// ---------- Auswertungstabelle ----------
+const COLS = MODE === "x"
+  ? [ {k:"x",  h:"x in cm",       f:(k,dt)=>100*state.v0*k*dt,                       tol:0.3},
+      {k:"d",  h:"Δx in cm",      f:(k,dt)=>100*state.v0*dt,                         tol:0.3},
+      {k:"q",  h:"x / t in m/s",  f:(k,dt)=>state.v0,                                tol:0.06, si:true} ]
+  : [ {k:"y",  h:"y in cm",       f:(k,dt)=>100*0.5*g*(k*dt)**2,                     tol:0.3},
+      {k:"d",  h:"Δy in cm",      f:(k,dt)=>100*0.5*g*((k*dt)**2-((k-1)*dt)**2),      tol:0.3},
+      {k:"v",  h:"v<sub>y</sub> = Δy/Δt in m/s", f:(k,dt)=>0.5*g*((k*dt)**2-((k-1)*dt)**2)/dt, tol:0.06, si:true},
+      {k:"r",  h:"y / t in m/s",   f:(k,dt)=>0.5*g*k*dt,                             tol:0.06, si:true},
+      {k:"s",  h:"t² in s²",       f:(k,dt)=>(k*dt)**2,                              tol:0.002, si:true, d:3},
+      {k:"q",  h:"y / t² in m/s²", f:(k,dt)=>0.5*g,                                  tol:0.15, si:true} ];
+const NROWS = 4;
+function buildEval(){
+  let h = "<tr><th>Bild</th><th>t in s</th>" + COLS.map(c => "<th>" + c.h + "</th>").join("") + "</tr>";
+  for (let k = 1; k <= NROWS; k++){
+    h += '<tr><td>' + k + '</td><td class="tcell" data-k="' + k + '"></td>' +
+      COLS.map(c => '<td data-k="' + k + '" data-c="' + c.k + '"><input inputmode="decimal" aria-label="' + c.k + ' Bild ' + k + '"><span class="fb"></span></td>').join("") + "</tr>";
+  }
+  $("evalTbl").innerHTML = h; updateT();
+}
+function updateT(){ document.querySelectorAll("#evalTbl .tcell").forEach(td => td.textContent = fmt(td.dataset.k * state.dt, 2)); }
+function parseNum(s){ s = (s || "").trim().replace(",", "."); if (s === "") return null; const v = Number(s); return isFinite(v) ? v : NaN; }
+function checkEval(){
+  let ok = 0, filled = 0;
+  document.querySelectorAll("#evalTbl td[data-c]").forEach(td => {
+    const c = COLS.find(c => c.k === td.dataset.c), k = +td.dataset.k;
+    const v = parseNum(td.querySelector("input").value), fb = td.querySelector(".fb");
+    td.classList.remove("ok", "bad"); fb.textContent = "";
+    if (v === null) return;
+    filled++;
+    const exp = c.f(k, state.dt);
+    if (!isNaN(v) && Math.abs(v - exp) <= c.tol){ td.classList.add("ok"); ok++; return; }
+    td.classList.add("bad");
+    if (isNaN(v)) fb.textContent = "keine Zahl";
+    else if (exp !== 0 && (Math.abs(v - exp * 100) <= c.tol * 100 || Math.abs(v * 100 - exp) <= c.tol)) fb.textContent = "Einheit prüfen";
+    else if (c.si && exp !== 0 && Math.abs(v - exp * 10) <= c.tol * 10) fb.textContent = "Einheit prüfen";
+    else fb.textContent = "noch nicht";
+  });
+  $("evalOut").textContent = filled ? (ok + " von " + filled + " eingetragenen Werten stimmen" + (ok === filled ? ". Sehr gut!" : ". Rote Felder noch einmal nachmessen oder nachrechnen.")) : "Noch keine Werte eingetragen.";
+}
+function clearMarks(){ document.querySelectorAll("#evalTbl td[data-c]").forEach(td => { td.classList.remove("ok","bad"); td.querySelector(".fb").textContent = ""; }); $("evalOut").textContent = ""; }
+$("evalBtn").onclick = checkEval;
+$("evalClr").onclick = () => { document.querySelectorAll("#evalTbl input").forEach(i => i.value = ""); clearMarks(); syncMirror(); syncHeft(); };
+buildEval();
+
+function evalInput(c, k){ return document.querySelector('#evalTbl td[data-k="' + k + '"][data-c="' + c + '"] input'); }
+function syncMirror(){
+  document.querySelectorAll("[data-m]").forEach(el => {
+    const [c, k] = el.dataset.m.split("-");
+    if (c === "t"){ el.textContent = fmt(k * state.dt, 2); return; }
+    const inp = evalInput(c, k); if (!inp) return;
+    if (el.tagName === "INPUT"){ if (el !== document.activeElement) el.value = inp.value; }
+    else el.textContent = inp.value.trim().replace(".", ",");
+  });
+}
+$("evalTbl").addEventListener("input", syncMirror);
+document.addEventListener("input", e => {
+  const el = e.target;
+  if (el.classList && el.classList.contains("mirror")){
+    const [c, k] = el.dataset.m.split("-"); const inp = evalInput(c, k);
+    if (inp){ inp.value = el.value; clearMarks(); }
+  }
+  saveAll();
+});
+
+// ---------- Eingaben speichern (nur auf diesem Gerät) ----------
+const KEY = "waagerechterWurf-" + MODE + "-v1";
+const saveEls = () => Array.from(document.querySelectorAll(".save, #evalTbl input"));
+function saveAll(){
+  try { localStorage.setItem(KEY, JSON.stringify(saveEls().map(el => el.value))); } catch(e){}
+}
+function loadAll(){
+  try {
+    const v = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (Array.isArray(v)) saveEls().forEach((el, i) => { if (typeof v[i] === "string") el.value = v[i]; });
+  } catch(e){}
+}
+loadAll();
+syncMirror();
+function syncHeft(){
+  document.querySelectorAll(".sumtbl").forEach(box => {
+    let h = '<table class="tpl"><tr><th>Bild</th><th>t in s</th>' + COLS.map(c => "<th>" + c.h + "</th>").join("") + "</tr>";
+    for (let k = 1; k <= NROWS; k++){
+      h += "<tr><td>" + k + "</td><td>" + fmt(k * state.dt, 2) + "</td>" +
+        COLS.map(c => { const v = evalInput(c.k, k).value.trim().replace(".", ","); return "<td>" + (v || "&nbsp;") + "</td>"; }).join("") + "</tr>";
+    }
+    box.innerHTML = h + "</table>";
+  });
+  document.querySelectorAll(".hshow").forEach(sp => {
+    const src = document.querySelector('[data-heft="' + sp.dataset.show + '"]');
+    const v = src ? src.value.trim() : "";
+    sp.textContent = v || "________ (noch offen)"; sp.classList.toggle("empty", !v);
+  });
+}
+document.addEventListener("input", syncHeft);
+syncHeft();
+let wipeArmed = null;
+$("wipeAll").onclick = () => {
+  const b = $("wipeAll");
+  if (!wipeArmed){
+    b.textContent = "Wirklich alles löschen? Nochmal tippen"; b.classList.add("danger");
+    wipeArmed = setTimeout(() => { wipeArmed = null; b.textContent = "Alle meine Eingaben löschen"; b.classList.remove("danger"); }, 4000);
+    return;
+  }
+  clearTimeout(wipeArmed); wipeArmed = null; b.textContent = "Alle meine Eingaben löschen"; b.classList.remove("danger");
+  saveEls().forEach(el => el.value = ""); clearMarks(); syncMirror(); saveAll(); syncHeft();
+  document.querySelectorAll("canvas.plot").forEach(cv => cv.getContext("2d").clearRect(0, 0, cv.width, cv.height));
+};
+$("printBtn").onclick = () => window.print();
+
+// ---------- t-x-Diagramm aus den eigenen Werten ----------
+function drawPlot(cvp){
+  const c2 = cvp.getContext("2d"), Wp = cvp.width, Hp = cvp.height;
+  const L = 52, Rm = 14, T = 14, B = 40;
+  c2.clearRect(0, 0, Wp, Hp); c2.fillStyle = "#fff"; c2.fillRect(0, 0, Wp, Hp);
+  const pts = [[0, 0]];
+  for (let k = 1; k <= NROWS; k++){ const v = parseNum(evalInput(V, k).value); if (v != null && !isNaN(v)) pts.push([k * state.dt, v]); }
+  const tMax = Math.max(0.1, NROWS * state.dt) * 1.1;
+  let yMax = Math.max(10, ...pts.map(p => p[1])); yMax = Math.ceil(yMax / 20) * 20;
+  const px = t => L + t / tMax * (Wp - L - Rm), py = v => Hp - B - v / yMax * (Hp - B - T);
+  c2.strokeStyle = "#e6eaf0"; c2.lineWidth = 1; c2.font = "12px system-ui, sans-serif"; c2.fillStyle = "#5b6575";
+  const tStep = state.dt;
+  for (let t = 0; t <= tMax + 1e-9; t += tStep){ c2.beginPath(); c2.moveTo(px(t), py(0)); c2.lineTo(px(t), T); c2.stroke(); c2.textAlign = "center"; c2.fillText(fmt(t, 2), px(t), Hp - B + 16); }
+  for (let v = 0; v <= yMax; v += 20){ c2.beginPath(); c2.moveTo(L, py(v)); c2.lineTo(Wp - Rm, py(v)); c2.stroke(); c2.textAlign = "right"; c2.fillText(String(v), L - 6, py(v) + 4); }
+  c2.strokeStyle = "#1d2430"; c2.lineWidth = 1.5; c2.beginPath(); c2.moveTo(L, T); c2.lineTo(L, py(0)); c2.lineTo(Wp - Rm, py(0)); c2.stroke();
+  c2.fillStyle = "#1d2430"; c2.textAlign = "center"; c2.fillText("t in s", (L + Wp) / 2, Hp - 6);
+  c2.save(); c2.translate(14, (T + Hp - B) / 2); c2.rotate(-Math.PI / 2); c2.fillText(V + " in cm", 0, 0); c2.restore();
+  c2.fillStyle = "#1f6feb";
+  pts.forEach(p => { c2.beginPath(); c2.arc(px(p[0]), py(p[1]), 5, 0, Math.PI * 2); c2.fill(); });
+  if (pts.length < 2){ c2.fillStyle = "#c62f3e"; c2.textAlign = "center"; c2.fillText("Trage zuerst Werte in die Tabelle ein.", (L + Wp) / 2, T + 20); }
+}
+document.querySelectorAll(".plotBtn").forEach(b => b.onclick = () => drawPlot(b.parentElement.querySelector("canvas.plot")));
+
+if ($("solBtn")){
+  let shown = false;
+  $("solBtn").onclick = () => {
+    shown = !shown;
+    document.querySelectorAll("#evalTbl td[data-c]").forEach(td => {
+      const c = COLS.find(c => c.k === td.dataset.c), k = +td.dataset.k;
+      td.querySelector("input").value = shown ? fmt(c.f(k, state.dt), c.d != null ? c.d : (c.si ? 2 : 1)) : "";
+    });
+    if (shown) checkEval(); else clearMarks(); syncMirror(); syncHeft();
+    $("solBtn").textContent = shown ? "Lösungen ausblenden" : "Lösungen zeigen";
+  };
+}
+window.addEventListener("resize", resize);
+resize();
+})();
+</script>
+</body>
+</html>
