@@ -62,7 +62,9 @@
   table.chk td .fb{display:block;font-size:.75rem;color:#c62f3e;min-height:1em}
   #measDetail p{margin:2px 0}
   textarea.ans{display:block;width:100%;margin-top:6px;font:inherit;font-size:.95rem;padding:8px 10px;border:1px solid #b9c4d3;border-radius:8px;background:#fffef7;resize:vertical}
-  input.blank{font:inherit;font-size:.95rem;padding:3px 6px;border:none;border-bottom:2px solid #7d93b8;background:#fffef7;border-radius:4px 4px 0 0;max-width:100%}
+  input.blank{font:inherit;font-size:.95rem;padding:4px 8px;border:2px solid #7d93b8;background:#fff;border-radius:6px;max-width:100%;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
+  input.blank::placeholder{color:#9aa6b8;font-style:italic}
+  input.blank:placeholder-shown{background:#fff;border-color:#c2620a;border-style:dashed}
   textarea.ans:focus,input.blank:focus,input.mirror:focus{outline:2px solid var(--accent);outline-offset:1px}
   input.mirror{width:5.2em;font:inherit;font-size:.92rem;padding:3px 6px;border:1px solid var(--line);border-radius:6px;text-align:right;background:#fffef7}
   .plotwrap{margin:8px 0}
@@ -167,15 +169,15 @@
 </ol>
 <h3>C · Auswerten</h3><ol class="tasks" start="8">
 <li><span class="op">Vergleiche</span> die Werte für Δx miteinander. Was fällt dir auf?<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
-<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Ergänze den Satz: „In gleichen Zeitabschnitten Δt legt die Kugel in x-Richtung <input class="blank save" size="12" placeholder="" autocomplete="off" data-heft="h1"> Strecken zurück.“</li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Ergänze den Satz: „In gleichen Zeitabschnitten Δt legt die Kugel in x-Richtung <input class="blank save" size="12" placeholder="hier eintragen" autocomplete="off" data-heft="h1"> Strecken zurück.“</li>
 <li><span class="op">Berechne</span> für die Bilder 1 bis 4 den Quotienten x / t in m/s und trage ihn in der <b>Auswertungstabelle</b> in die Spalte „x / t“ ein.<details><summary>Hilfe</summary><p>Rechne x zuerst in m um. Beispiel: 15 cm = 0,15 m.</p></details></li>
 <li><span class="op">Vergleiche</span> die Werte für x / t mit der eingestellten Abwurfgeschwindigkeit v<sub>0</sub>.<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
 <li>Drücke auf „Diagramm zeichnen“. Es zeichnet ein t-x-Diagramm aus <b>deinen</b> Werten der Tabelle. <span class="op">Beschreibe</span> die Form des Graphen.<div class="plotwrap"><button class="plotBtn" type="button">Diagramm zeichnen</button><canvas class="plot" width="420" height="260"></canvas></div><textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
-<li class="heft"><span class="heftbadge">✎ Ins Heft</span><span class="op">Gib an</span>, welche Bewegungsart vorliegt: „Die Bewegung in x-Richtung ist eine <input class="blank save" size="18" placeholder="" autocomplete="off" data-heft="h2"> Bewegung.“<details><summary>Hilfe</summary><p>Ihr kennt aus dem aktuellen Unterricht zwei Bewegungsarten: Bei der einen bleibt die Geschwindigkeit gleich, bei der anderen ändert sie sich gleichmäßig.</p></details></li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span><span class="op">Gib an</span>, welche Bewegungsart vorliegt: „Die Bewegung in x-Richtung ist eine <input class="blank save" size="18" placeholder="hier eintragen" autocomplete="off" data-heft="h2"> Bewegung.“<details><summary>Hilfe</summary><p>Ihr kennt aus dem aktuellen Unterricht zwei Bewegungsarten: Bei der einen bleibt die Geschwindigkeit gleich, bei der anderen ändert sie sich gleichmäßig.</p></details></li>
 </ol>
 <h3>D · Gleichung aufstellen</h3><ol class="tasks" start="14">
-<li>In Aufgabe 11 hast du einen Zusammenhang zwischen x / t und v<sub>0</sub> gefunden. Schreibe ihn als Gleichung auf: x / t = <input class="blank save" size="10" placeholder="" autocomplete="off"></li>
-<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Stelle die Gleichung nach x um.<textarea class="ans save" rows="1" placeholder="Rechenweg …"></textarea><div class="box"><b>Mein Ergebnis für die x-Richtung:</b> x(t) = <input class="blank save" size="14" placeholder="" autocomplete="off" data-heft="h3"></div><p class="hint">Diese Gleichung brauchst du in Animation 2 wieder. Schreibe sie auch in dein Heft.</p></li>
+<li>In Aufgabe 11 hast du einen Zusammenhang zwischen x / t und v<sub>0</sub> gefunden. Schreibe ihn als Gleichung auf: x / t = <input class="blank save" size="10" placeholder="hier eintragen" autocomplete="off"></li>
+<li class="heft"><span class="heftbadge">✎ Ins Heft</span>Stelle die Gleichung nach x um.<textarea class="ans save" rows="1" placeholder="Rechenweg …"></textarea><div class="box"><b>Mein Ergebnis für die x-Richtung:</b> x(t) = <input class="blank save" size="14" placeholder="hier eintragen" autocomplete="off" data-heft="h3"></div><p class="hint">Diese Gleichung brauchst du in Animation 2 wieder. Schreibe sie auch in dein Heft.</p></li>
 </ol>
 <h3>E · Überprüfen</h3><ol class="tasks" start="16">
 <li>Stelle v<sub>0</sub> = 1,0 m/s ein. <span class="op">Berechne</span> mit deiner Gleichung, wie weit die Kugel in x-Richtung nach 0,3 s gekommen ist. <span class="op">Miss</span> danach in der Animation nach (Schatten 0 bis Schatten 3).<textarea class="ans save" rows="2" placeholder="Rechnung, Messwert, Vergleich …"></textarea></li>
