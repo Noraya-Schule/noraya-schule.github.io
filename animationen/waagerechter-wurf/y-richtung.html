@@ -56,6 +56,9 @@
   table.chk input{width:5.2em;font:inherit;font-size:.95rem;padding:4px 6px;border:1px solid var(--line);border-radius:6px;text-align:right}
   table.chk td.ok input{background:#e3f6e8;border-color:#3a9a55}
   table.chk td.bad input{background:#fde7e9;border-color:#c62f3e}
+  table.chk input.kin{width:3.6em;text-align:center;font-weight:600;background:#fffbe6;border-color:#e0b100}
+  table.chk input.kin.over{background:#fde7e9;border-color:#c62f3e}
+  #kWarn{color:#c62f3e;font-weight:600}
   table.chk td .fb{display:block;font-size:.75rem;color:#c62f3e;min-height:1em}
   #measDetail p{margin:2px 0}
   textarea.ans{display:block;width:100%;margin-top:6px;font:inherit;font-size:.95rem;padding:8px 10px;border:1px solid #b9c4d3;border-radius:8px;background:#fffef7;resize:vertical}
@@ -140,8 +143,10 @@
     <div class="card full hefcard">
       <h2>Auswertungstabelle <span class="heftbadge" style="margin-left:6px">✎ Ins Heft</span></h2>
       <div class="box" style="margin-top:0"><b>y</b> = Ort der Kugel zur Zeit t: Abstand senkrecht von <b>Bild 0</b> bis Bild k.<br><b>Δy</b> = Strecke in <b>einem</b> Zeitintervall Δt: Abstand senkrecht von Bild k−1 bis Bild k, also Δy = y<sub>k</sub> − y<sub>k−1</sub>.</div><p class="hint">Trage deine Mess- und Rechenwerte ein (Komma oder Punkt). „Prüfen“ vergleicht sie mit den <b>aktuellen Einstellungen</b> (v<sub>0</sub> und Δt) der Animation.</p>
+      <p class="hint">In jedem Feld steht grau, welcher Wert hinein gehört. Die Bildnummer im gelben Feld kannst du ändern, z. B. auf 7 oder 8.</p>
       <div style="overflow-x:auto"><table class="tpl chk" id="evalTbl"></table></div>
       <div class="btns" style="margin:10px 0 0"><button id="evalBtn" class="primary">Prüfen</button><button id="evalClr">Tabelle leeren</button></div>
+      <p id="kWarn" class="hint"></p>
       <p id="evalOut" class="hint"></p>
     </div>
 
@@ -154,7 +159,7 @@
 <li><span class="op">Beschreibe</span> in einem Satz: Wird der Schatten schneller, langsamer oder bleibt er gleich schnell?<textarea class="ans save" rows="2" placeholder="Deine Antwort …"></textarea></li>
 </ol>
 <h3>B · Messen</h3><ol class="tasks" start="3">
-<li>Das ist deine Messtabelle. Du kannst hier oder in der <b>Auswertungstabelle</b> (oben) eintragen, beide Tabellen sind verbunden. Achte auf den Unterschied zwischen y und Δy (Kasten über der Auswertungstabelle).<table class="tpl"><tr><th>Bild</th><th>t in s</th><th>y in cm</th><th>Δy in cm</th></tr><tr><td>0</td><td>0</td><td>0</td><td>–</td></tr><tr><td>1</td><td><span data-m="t-1"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-1"></td><td><input class="mirror" inputmode="decimal" data-m="d-1"></td></tr><tr><td>2</td><td><span data-m="t-2"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-2"></td><td><input class="mirror" inputmode="decimal" data-m="d-2"></td></tr><tr><td>3</td><td><span data-m="t-3"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-3"></td><td><input class="mirror" inputmode="decimal" data-m="d-3"></td></tr><tr><td>4</td><td><span data-m="t-4"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-4"></td><td><input class="mirror" inputmode="decimal" data-m="d-4"></td></tr></table><p class="hint">Bild Nr. k wurde zur Zeit t = k · Δt aufgenommen. y zählt von der Tischkante nach unten.</p></li>
+<li>Das ist deine Messtabelle. Du kannst hier oder in der <b>Auswertungstabelle</b> (oben) eintragen, beide Tabellen sind verbunden. Achte auf den Unterschied zwischen y und Δy (Kasten über der Auswertungstabelle).<table class="tpl"><tr><th>Bild</th><th>t in s</th><th>y in cm</th><th>Δy in cm</th></tr><tr><td>0</td><td>0</td><td>0</td><td>–</td></tr><tr><td><span data-m="b-1">1</span></td><td><span data-m="t-1"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-1"></td><td><input class="mirror" inputmode="decimal" data-m="d-1"></td></tr><tr><td><span data-m="b-2">2</span></td><td><span data-m="t-2"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-2"></td><td><input class="mirror" inputmode="decimal" data-m="d-2"></td></tr><tr><td><span data-m="b-3">3</span></td><td><span data-m="t-3"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-3"></td><td><input class="mirror" inputmode="decimal" data-m="d-3"></td></tr><tr><td><span data-m="b-4">4</span></td><td><span data-m="t-4"></span></td><td><input class="mirror" inputmode="decimal" data-m="y-4"></td><td><input class="mirror" inputmode="decimal" data-m="d-4"></td></tr></table><p class="hint">Bild Nr. k wurde zur Zeit t = k · Δt aufgenommen. y zählt von der Tischkante nach unten.</p></li>
 <li><span class="op">Miss</span> mit dem Messwerkzeug den Abstand vom Schatten 0 zu den Schatten 1, 2, 3 und 4. Starte jedes Mal bei Schatten 0. Trage die Werte als y ein.<details><summary>Hilfe</summary><p>Tippe auf Schatten 0 und ziehe zum gewünschten Schatten. Lies den gemessenen Abstand ab.</p></details></li>
 <li><span class="op">Berechne</span> die Abstände Δy zwischen benachbarten Bildern: y<sub>1</sub> − y<sub>0</sub>, y<sub>2</sub> − y<sub>1</sub>, … Trage sie ein. Drücke danach in der <b>Auswertungstabelle</b> auf „Prüfen“.</li>
 </ol>
@@ -559,17 +564,33 @@ const NROWS = 4;
 function buildEval(){
   let h = "<tr><th>Bild</th><th>t in s</th>" + COLS.map(c => "<th>" + c.h + "</th>").join("") + "</tr>";
   for (let k = 1; k <= NROWS; k++){
-    h += '<tr><td>' + k + '</td><td class="tcell" data-k="' + k + '"></td>' +
+    h += '<tr><td><input class="kin" type="number" min="1" step="1" value="' + k + '" data-r="' + k + '" aria-label="Bildnummer Zeile ' + k + '"></td><td class="tcell" data-k="' + k + '"></td>' +
       COLS.map(c => '<td data-k="' + k + '" data-c="' + c.k + '"><input inputmode="decimal" aria-label="' + c.k + ' Bild ' + k + '"><span class="fb"></span></td>').join("") + "</tr>";
   }
   $("evalTbl").innerHTML = h; updateT();
 }
-function updateT(){ document.querySelectorAll("#evalTbl .tcell").forEach(td => td.textContent = fmt(td.dataset.k * state.dt, 2)); }
+// Zeile r (1–4) zeigt Bild Nr. kOf(r); Lernende können die Bildnummer frei wählen.
+const SUBS = "₀₁₂₃₄₅₆₇₈₉", subN = n => String(n).split("").map(d => SUBS[+d]).join("");
+function maxK(){ return Math.max(1, Math.floor(tEnd() / state.dt + 1e-6)); }
+function kInput(r){ return document.querySelector('#evalTbl input.kin[data-r="' + r + '"]'); }
+function kOf(r){ const el = kInput(r); const v = el ? parseInt(el.value, 10) : NaN; return isFinite(v) && v >= 1 ? v : +r; }
+function updateT(){
+  const mk = maxK();
+  const zuGross = [];
+  document.querySelectorAll("#evalTbl input.kin").forEach(el => { el.max = mk; const k = kOf(el.dataset.r); el.classList.toggle("over", k > mk); if (k > mk) zuGross.push(k); });
+  const w = $("kWarn");
+  if (w) w.innerHTML = zuGross.length ? "⚠ Bild " + zuGross.join(" und ") + " gibt es bei Δt = " + fmt(state.dt, 2) + " s nicht, weil die Kugel vorher am Boden ist. Es gibt nur die Bilder 1 bis " + mk + (state.dt > 0.06 ? ". Für mehr Bilder stelle Δt = 0,05 s ein." : ".") : "";
+  document.querySelectorAll("#evalTbl .tcell").forEach(td => td.textContent = fmt(kOf(td.dataset.k) * state.dt, 2));
+  document.querySelectorAll("#evalTbl td[data-c] input").forEach(inp => {
+    const td = inp.parentElement, k = kOf(td.dataset.k), c = td.dataset.c;
+    inp.placeholder = c === V ? V + subN(k) : c === "d" ? "Δ" + V + subN(k) : c === "v" ? "v" + subN(k) : c === "s" ? "t" + subN(k) + "²" : c === "r" ? V + subN(k) + " / t" + subN(k) : c === "q" ? V + subN(k) + " / t" + subN(k) + (MODE === "y" ? "²" : "") : "";
+  });
+}
 function parseNum(s){ s = (s || "").trim().replace(",", "."); if (s === "") return null; const v = Number(s); return isFinite(v) ? v : NaN; }
 function checkEval(){
   let ok = 0, filled = 0;
   document.querySelectorAll("#evalTbl td[data-c]").forEach(td => {
-    const c = COLS.find(c => c.k === td.dataset.c), k = +td.dataset.k;
+    const c = COLS.find(c => c.k === td.dataset.c), k = kOf(td.dataset.k);
     const v = parseNum(td.querySelector("input").value), fb = td.querySelector(".fb");
     td.classList.remove("ok", "bad"); fb.textContent = "";
     if (v === null) return;
@@ -586,14 +607,23 @@ function checkEval(){
 }
 function clearMarks(){ document.querySelectorAll("#evalTbl td[data-c]").forEach(td => { td.classList.remove("ok","bad"); td.querySelector(".fb").textContent = ""; }); $("evalOut").textContent = ""; }
 $("evalBtn").onclick = checkEval;
-$("evalClr").onclick = () => { document.querySelectorAll("#evalTbl input").forEach(i => i.value = ""); clearMarks(); syncMirror(); syncHeft(); };
+$("evalTbl").addEventListener("input", e => {
+  if (!e.target.classList.contains("kin")) return;
+  updateT(); clearMarks(); syncMirror(); syncHeft(); saveK();
+});
+$("evalTbl").addEventListener("change", e => {
+  if (!e.target.classList.contains("kin")) return;
+  e.target.value = kOf(e.target.dataset.r); updateT(); syncMirror(); syncHeft(); saveK();
+});
+$("evalClr").onclick = () => { document.querySelectorAll("#evalTbl td[data-c] input").forEach(i => i.value = ""); clearMarks(); syncMirror(); syncHeft(); };
 buildEval();
 
 function evalInput(c, k){ return document.querySelector('#evalTbl td[data-k="' + k + '"][data-c="' + c + '"] input'); }
 function syncMirror(){
   document.querySelectorAll("[data-m]").forEach(el => {
     const [c, k] = el.dataset.m.split("-");
-    if (c === "t"){ el.textContent = fmt(k * state.dt, 2); return; }
+    if (c === "t"){ el.textContent = fmt(kOf(k) * state.dt, 2); return; }
+    if (c === "b"){ el.textContent = kOf(k); return; }
     const inp = evalInput(c, k); if (!inp) return;
     if (el.tagName === "INPUT"){ if (el !== document.activeElement) el.value = inp.value; }
     else el.textContent = inp.value.trim().replace(".", ",");
@@ -611,7 +641,9 @@ document.addEventListener("input", e => {
 
 // ---------- Eingaben speichern (nur auf diesem Gerät) ----------
 const KEY = "waagerechterWurf-" + MODE + "-v1";
-const saveEls = () => Array.from(document.querySelectorAll(".save, #evalTbl input"));
+const saveEls = () => Array.from(document.querySelectorAll(".save, #evalTbl td[data-c] input"));
+function saveK(){ try { localStorage.setItem(KEY + "-bild", JSON.stringify([1,2,3,4].map(r => kInput(r).value))); } catch(e){} }
+function loadK(){ try { const v = JSON.parse(localStorage.getItem(KEY + "-bild") || "null"); if (Array.isArray(v)) v.forEach((x, i) => { const el = kInput(i + 1); if (el && x) el.value = x; }); } catch(e){} updateT(); }
 function saveAll(){
   try { localStorage.setItem(KEY, JSON.stringify(saveEls().map(el => el.value))); } catch(e){}
 }
@@ -622,12 +654,13 @@ function loadAll(){
   } catch(e){}
 }
 loadAll();
+loadK();
 syncMirror();
 function syncHeft(){
   document.querySelectorAll(".sumtbl").forEach(box => {
     let h = '<table class="tpl"><tr><th>Bild</th><th>t in s</th>' + COLS.map(c => "<th>" + c.h + "</th>").join("") + "</tr>";
     for (let k = 1; k <= NROWS; k++){
-      h += "<tr><td>" + k + "</td><td>" + fmt(k * state.dt, 2) + "</td>" +
+      h += "<tr><td>" + kOf(k) + "</td><td>" + fmt(kOf(k) * state.dt, 2) + "</td>" +
         COLS.map(c => { const v = evalInput(c.k, k).value.trim().replace(".", ","); return "<td>" + (v || "&nbsp;") + "</td>"; }).join("") + "</tr>";
     }
     box.innerHTML = h + "</table>";
@@ -649,7 +682,7 @@ $("wipeAll").onclick = () => {
     return;
   }
   clearTimeout(wipeArmed); wipeArmed = null; b.textContent = "Alle meine Eingaben löschen"; b.classList.remove("danger");
-  saveEls().forEach(el => el.value = ""); clearMarks(); syncMirror(); saveAll(); syncHeft();
+  saveEls().forEach(el => el.value = ""); [1,2,3,4].forEach(r => kInput(r).value = r); updateT(); saveK(); clearMarks(); syncMirror(); saveAll(); syncHeft();
   document.querySelectorAll("canvas.plot").forEach(cv => cv.getContext("2d").clearRect(0, 0, cv.width, cv.height));
 };
 $("printBtn").onclick = () => window.print();
@@ -660,8 +693,9 @@ function drawPlot(cvp){
   const L = 52, Rm = 14, T = 14, B = 40;
   c2.clearRect(0, 0, Wp, Hp); c2.fillStyle = "#fff"; c2.fillRect(0, 0, Wp, Hp);
   const pts = [[0, 0]];
-  for (let k = 1; k <= NROWS; k++){ const v = parseNum(evalInput(V, k).value); if (v != null && !isNaN(v)) pts.push([k * state.dt, v]); }
-  const tMax = Math.max(0.1, NROWS * state.dt) * 1.1;
+  let kMx = 1;
+  for (let r = 1; r <= NROWS; r++){ const k = kOf(r); kMx = Math.max(kMx, k); const v = parseNum(evalInput(V, r).value); if (v != null && !isNaN(v)) pts.push([k * state.dt, v]); }
+  const tMax = Math.max(0.1, kMx * state.dt) * 1.1;
   let yMax = Math.max(10, ...pts.map(p => p[1])); yMax = Math.ceil(yMax / 20) * 20;
   const px = t => L + t / tMax * (Wp - L - Rm), py = v => Hp - B - v / yMax * (Hp - B - T);
   c2.strokeStyle = "#e6eaf0"; c2.lineWidth = 1; c2.font = "12px system-ui, sans-serif"; c2.fillStyle = "#5b6575";
@@ -682,7 +716,7 @@ if ($("solBtn")){
   $("solBtn").onclick = () => {
     shown = !shown;
     document.querySelectorAll("#evalTbl td[data-c]").forEach(td => {
-      const c = COLS.find(c => c.k === td.dataset.c), k = +td.dataset.k;
+      const c = COLS.find(c => c.k === td.dataset.c), k = kOf(td.dataset.k);
       td.querySelector("input").value = shown ? fmt(c.f(k, state.dt), c.d != null ? c.d : (c.si ? 2 : 1)) : "";
     });
     if (shown) checkEval(); else clearMarks(); syncMirror(); syncHeft();
