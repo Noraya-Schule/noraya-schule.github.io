@@ -296,10 +296,6 @@ function drawScene(){
   ctx.fillStyle = C.tableDark;
   ctx.fillRect(X(-0.07), Y(R) + 0.035 * s, Math.max(4, 0.04 * s), Y(H + R) - Y(R) - 0.035 * s);
   ctx.fillRect(X(XMIN + 0.03), Y(R) + 0.035 * s, Math.max(4, 0.04 * s), Y(H + R) - Y(R) - 0.035 * s);
-  // Rampe
-  ctx.fillStyle = "#c9ced6";
-  ctx.beginPath(); ctx.moveTo(X(-0.40), Y(-0.12)); ctx.lineTo(X(-0.12), Y(R)); ctx.lineTo(X(-0.40), Y(R)); ctx.closePath(); ctx.fill();
-  label("Rampe", X(-0.33), Y(-0.02), "#6b7380", "center", "middle", 11);
   // Nulllinie
   ctx.setLineDash([5, 5]); ctx.strokeStyle = "#9aa3b0"; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(0.12), Y(0)); ctx.stroke(); ctx.setLineDash([]);
@@ -458,8 +454,8 @@ $("step").onclick = () => {
   draw();
 };
 $("reset").onclick = () => { stop(); state.t = 0; state.meas = null; showMeas(); draw(); };
-$("v0").oninput = e => { stop(); clearMarks(); state.t = 0; state.v0 = parseFloat(e.target.value); $("v0Out").textContent = fmt(state.v0, 1) + " m/s"; state.meas = null; showMeas(); draw(); };
-$("dt").onchange = e => { state.dt = parseFloat(e.target.value); updateT(); syncMirror(); if (typeof syncHeft === "function") syncHeft(); clearMarks(); $("dtOut").textContent = fmt(state.dt, 2) + " s"; state.meas = null; draw(); };
+$("v0").oninput = e => { stop(); clearMarks(); state.t = 0; state.v0 = parseFloat(e.target.value); $("v0Out").textContent = fmt(state.v0, 1) + " m/s"; resetMeasurements("v<sub>0</sub>"); draw(); };
+$("dt").onchange = e => { state.dt = parseFloat(e.target.value); updateT(); syncMirror(); if (typeof syncHeft === "function") syncHeft(); clearMarks(); $("dtOut").textContent = fmt(state.dt, 2) + " s"; resetMeasurements("der Zeitabstand Δt"); draw(); };
 $("speed").onchange = e => { state.speed = parseFloat(e.target.value); };
 const bind = (id, key) => { const el = $(id); if (!el) return; state[key] = el.checked; el.onchange = () => { state[key] = el.checked; state.meas = null; draw(); }; };
 bind("cGrid", "showGrid"); bind("cHide", "hideBall"); bind("cProj", "showProj"); bind("cCmp", "showCmp");
@@ -538,6 +534,12 @@ function renderLog(){
       (known && m.j > 0 ? fmt(m.pos, 1) : "–") + "</td><td>" + (known && m.j > 0 ? fmt(m.delta, 1) : "–") + "</td></tr>";
   });
   w.innerHTML = h + "</tbody></table>";
+}
+// Bei geänderter Einstellung passen alte Messungen nicht mehr zu den Bildern: alles löschen und kurz erklären.
+function resetMeasurements(was){
+  const hatte = state.log.length > 0 || state.meas;
+  state.log = []; renderLog(); state.meas = null; showMeas();
+  if (hatte) $("measDetail").innerHTML = '<p class="empty">Die bisherigen Messungen wurden gelöscht, weil ' + was + ' geändert wurde. Bitte neu messen.</p>';
 }
 $("clearLog").onclick = () => { state.log = []; renderLog(); state.meas = null; showMeas(); draw(); };
 
